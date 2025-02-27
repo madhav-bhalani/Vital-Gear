@@ -5,15 +5,15 @@ import { useModal } from "../ModalContext";
 
 export default function Cart() {
   const { cartVisible, handleCart } = useModal();
-  let cart = [1, 2, 3, 4];
-//   const [quantity, setQuantity] = useState(1);
+  let cart = [1, 2, 3];
+  //   const [quantity, setQuantity] = useState(1);
 
-//   const handleQuantityChange = (amount) => {
-//     setQuantity((prevQuantity) => {
-//       const newQuantity = prevQuantity + amount;
-//       return newQuantity > 0 ? newQuantity : 1;
-//     });
-//   };
+  //   const handleQuantityChange = (amount) => {
+  //     setQuantity((prevQuantity) => {
+  //       const newQuantity = prevQuantity + amount;
+  //       return newQuantity > 0 ? newQuantity : 1;
+  //     });
+  //   };
   return (
     <>
       {/* Overlay (background fade effect) */}
