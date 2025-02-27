@@ -1,0 +1,10 @@
+#root {
+  font-family: "Poppins", sans-serif;
+  /* background: #f9f7f7; */
+  background-color: #f9f7f7;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
