@@ -6,14 +6,9 @@ import { useModal } from "../ModalContext";
 export default function Cart() {
   const { cartVisible, handleCart } = useModal();
   let cart = [1, 2, 3];
-  //   const [quantity, setQuantity] = useState(1);
 
-  //   const handleQuantityChange = (amount) => {
-  //     setQuantity((prevQuantity) => {
-  //       const newQuantity = prevQuantity + amount;
-  //       return newQuantity > 0 ? newQuantity : 1;
-  //     });
-  //   };
+  
+
   return (
     <>
       {/* Overlay (background fade effect) */}
@@ -96,7 +91,8 @@ function CartItem() {
               <p className="font-semibold">VitalGear Creatine & Shaker</p>
               <p>0.55lb, Unflavoured</p>
               <div className="flex flex-row items-center gap-2">
-                <div>
+                {/* DropDown Qunatity Options */}
+                {/* <div>
                   <select className="w-max rounded-lg border-gray-200 bg-[#F9F7F7] p-3 text-sm shadow-sm">
                     <option value="1">1</option>
                     <option value="2">2</option>
@@ -104,27 +100,10 @@ function CartItem() {
                     <option value="4">4</option>
                     <option value="5">5</option>
                   </select>
-                </div>
-                {/* <div className="flex items-center border border-gray-300 rounded">
-                  <button
-                    className="px-2 py-1 text-blue-600"
-                    onClick={() => handleQuantityChange(-1)}
-                  >
-                    −
-                  </button>
-                  <input
-                    type="text"
-                    className="w-12 text-center border-none focus:ring-0"
-                    value={quantity}
-                    readOnly
-                  />
-                  <button
-                    className="px-2 py-1 text-blue-600"
-                    onClick={() => handleQuantityChange(1)}
-                  >
-                    +
-                  </button>
                 </div> */}
+
+                <ItemCounter/>
+               
                 <div>
                   <button className="font-semibold">Remove</button>
                 </div>
@@ -136,6 +115,41 @@ function CartItem() {
           </div>
         </div>
       </div>
+    </>
+  );
+}
+
+function ItemCounter(){
+  const [quantity, setQuantity] = useState(1);
+
+  const handleQuantityChange = (amount) => {
+    setQuantity((prevQuantity) => {
+      const newQuantity = prevQuantity + amount;
+      return newQuantity > 0 ? newQuantity : 1;
+    });
+  };
+  return(
+    <>
+     <div className="flex bg-[#112D4E] text-[#DBE2EF] items-center border border-gray-300 rounded">
+                  <button
+                    className="px-2 py-1"
+                    onClick={() => handleQuantityChange(-1)}
+                  >
+                    −
+                  </button>
+                  <input
+                    type="text"
+                    className="text-[#3f72af] w-12 text-center border-none focus:ring-0"
+                    value={quantity}
+                    readOnly
+                  />
+                  <button
+                    className="px-2 py-1"
+                    onClick={() => handleQuantityChange(1)}
+                  >
+                    +
+                  </button>
+                </div>
     </>
   );
 }
