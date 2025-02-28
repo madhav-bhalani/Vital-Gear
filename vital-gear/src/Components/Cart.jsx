@@ -5,7 +5,7 @@ import { useModal } from "../ModalContext";
 
 export default function Cart() {
   const { cartVisible, handleCart } = useModal();
-  let cart = [1, 2, 3];
+  let cart = [1, 2, 3,4,5];
 
   
 

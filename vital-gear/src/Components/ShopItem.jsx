@@ -15,7 +15,7 @@ export default function ShopItem({ image, title, size, flavour, price }) {
               className="w-[269px] h-full rounded-md"
             />
           </div>
-          <div className=" flex flex-col gap-2 text-lg">
+          <div className=" flex flex-col gap-2 text-lg ">
             <p>{title},</p>
             <p className="font-semibold">
               {size}, {flavour}

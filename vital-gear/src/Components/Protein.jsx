@@ -8,9 +8,10 @@ import SignIn from "./SignIn";
 import SignUp from "./SignUp";
 import ShoppingCart from "./ShoppingCart";
 import Basics from "./Basics";
+import productsData from "./productsData.json";
 
 export default function Protein() {
-  let shopItem = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+  // let shopItem = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   return (
     <>
       <Header />
@@ -25,7 +26,8 @@ export default function Protein() {
           </span>
         </div>
         <div className="py-3">
-          <p className="text-left text-gray-500">
+         <p className="text-left text-gray-500">
+         
             Introducing VitalGear Whey Protein, the ultimate choice for fast
             muscle recovery and prevention of muscle breakdown. Our whey protein
             is a complete protein, containing all nine essential amino acids,
@@ -41,15 +43,15 @@ export default function Protein() {
         <div className="h-px bg-[#09274d] mt-3"></div>
 
         <div className="flex flex-row flex-wrap gap-10 my-5">
-          {shopItem.map((product, i) => {
+          {productsData.map((product, i) => {
             return (
               <ShopItem
-                key={i}
-                image="/products/protein-isolate.jpg"
-                title="VitalGear Impact Whey Isolate"
-                size="2.2lb"
-                flavour="Unflavoured"
-                price="6499"
+                key={product.id}
+                image={product.image}
+                title={product.brand + " " + product.name}
+                size={product.size}
+                flavour={product.flavour}
+                price={product.price}
               />
             );
           })}
