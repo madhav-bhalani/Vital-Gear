@@ -1,5 +1,4 @@
-import axios from 'axios';
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Header from "./Header";
 import Breadcrumb from "./Breadcrumb";
 import ShopItem from "./ShopItem";
@@ -12,30 +11,7 @@ import Basics from "./Basics";
 import productsData from "./productsData.json";
 
 export default function Protein() {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  const fetchProducts = async () => {
-    try {
-      const response = await axios.get('http://localhost:3000/displayProducts/protein');
-      // console.log('Fetched data:', response.data);
-      const fetchedProducts = Array.isArray(response.data) ? response.data : response.data.data || [];
-      setProducts(fetchedProducts);
-      setLoading(false);
-    } catch (err) {
-      setError(err.message || 'Failed to fetch products');
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  if (loading) return <h1>Loading...</h1>;
-  if (error) return <h1>{error}</h1>;
-
+  // let shopItem = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   return (
     <>
       <Header />
@@ -50,7 +26,8 @@ export default function Protein() {
           </span>
         </div>
         <div className="py-3">
-          <p className="text-left text-gray-500">
+         <p className="text-left text-gray-500">
+         
             Introducing VitalGear Whey Protein, the ultimate choice for fast
             muscle recovery and prevention of muscle breakdown. Our whey protein
             is a complete protein, containing all nine essential amino acids,
@@ -60,26 +37,24 @@ export default function Protein() {
             range of protein powders and supplements, including Biozyme Whey
             Protein Isolate, Whey Active, Whey Premium, and Whey Prime, all
             offered at competitive prices. Elevate your fitness journey with
-            VitalGear today!
+            VitalGear today!
           </p>
         </div>
         <div className="h-px bg-[#09274d] mt-3"></div>
 
         <div className="flex flex-row flex-wrap gap-10 my-5">
-          {products.length > 0 ? (
-            products.map((product) => (
+          {productsData.map((product, i) => {
+            return (
               <ShopItem
-                key={product._id}
-                image={product.images?.displayImage || 'default-image-url'}
-                title={`${product.brandName || 'Unknown'} ${product.productName || 'Product'}`}
-                size={product.sizes?.weight[1] || 'N/A'}
-                flavour={product.productDetails?.flavours?.[0] || 'N/A'}
-                price={product.price?.productPrice || 0}
+                key={product.id}
+                image={product.image}
+                title={product.brand + " " + product.name}
+                size={product.size}
+                flavour={product.flavour}
+                price={product.price}
               />
-            ))
-          ) : (
-            <p>No products available</p>
-          )}
+            );
+          })}
         </div>
       </div>
 
@@ -87,8 +62,9 @@ export default function Protein() {
         <Pagination />
       </div>
 
-      <Basics />
+      <Basics/>
       <ShoppingCart />
+      
     </>
   );
 }
