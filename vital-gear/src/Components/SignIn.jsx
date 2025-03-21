@@ -1,34 +1,12 @@
 import React, { useState } from "react";
 import "./SignIn.jsx";
 import { useModal } from "../ModalContext.jsx";
-import { loginupuser } from "../config/api.js";
+
 
 export default function SignIn() {
   const { isSignInVisible, handleCloseModal, signInUser, setSignIn } =
     useModal();
-  // const navigate = useNavigate();
 
-  // const [data, setData] = useState({
-  //   username: "",
-  //   password: "",
-  // });
-
-  // const onEvent = (e) => {
-  //   setData((prevdata) => ({
-  //     ...prevdata,
-  //     [e.target.name]: e.target.value,
-  //   }));
-  // };
-
-  // const signinUser = async (e) => {
-  //   e.preventDefault();
-  //   const res = await loginupuser(data);
-  //   const { user } = res;
-  //   console.log(user);
-  //   setSignIn(true);
-
-  //   handleCloseModal("hidden");
-  // };
 
   return (
     <>
@@ -44,7 +22,8 @@ export default function SignIn() {
         }`}
       >
         <form
-          action="#"
+          action="http://localhost:3000/login"
+          method="post"
           className="mb-0 mt-6 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8 bg-[#dae0ef]"
         >
           <p className="text-center text-lg font-semibold">
@@ -52,15 +31,13 @@ export default function SignIn() {
           </p>
 
           <div>
-            <label htmlFor="email" className="sr-only">
-              Email
-            </label>
             <div className="relative">
               <input
-                type="email"
+                type="text"
                 name="username"
                 className="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
-                placeholder="Enter email"
+                placeholder="Enter email or phone number"
+                required
               />
               <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
                 <svg
@@ -82,15 +59,14 @@ export default function SignIn() {
           </div>
 
           <div>
-            <label htmlFor="password" className="sr-only">
-              Password
-            </label>
             <div className="relative">
               <input
                 type="password"
                 name="password"
                 className="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
                 placeholder="Enter password"
+                minLength={8}
+                required
               />
               <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
                 <svg
