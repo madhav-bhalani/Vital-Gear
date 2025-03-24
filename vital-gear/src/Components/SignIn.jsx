@@ -7,6 +7,9 @@ export default function SignIn() {
   const { isSignInVisible, handleCloseModal, signInUser, setSignIn } =
     useModal();
 
+    const handleLogin = async()=>{
+      
+    }
 
   return (
     <>
