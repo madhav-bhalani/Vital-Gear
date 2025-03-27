@@ -75,6 +75,7 @@ export default function Protein() {
                 size={product.sizes?.weight[1] || 'N/A'}
                 flavour={product.productDetails?.flavours?.[0] || 'N/A'}
                 price={product.price?.productPrice || 0}
+                onSale={product.price.onSale}
               />
             ))
           ) : (

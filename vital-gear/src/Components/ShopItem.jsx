@@ -3,22 +3,25 @@ import { FaStar } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
 
-export default function ShopItem({ image, title, size, flavour, price }) {
+export default function ShopItem({ image, title, size, flavour, price, onSale }) {
   return (
     <>
       <div className="flex flex-col gap-5 bg-[#dae0ef] max-w-lg p-5 rounded-md text-[#09274d]">
         <div className="flex flex-row gap-5">
-          <div className="bg-[#faf7f7] rounded-md">
+          <div className="relative bg-[#faf7f7] rounded-md">
             <img
               src={image}
               alt="protein-powder"
               className="w-[269px] h-full rounded-md"
             />
+            <span className={`absolute top-2 left-2 bg-[#09274d] text-white text-xs font-bold px-2 py-1 rounded-full ${onSale ? "visible" : "invisible"}`}>
+              Sale!
+            </span>
           </div>
           <div className=" flex flex-col gap-2 text-lg ">
             <p>{title},</p>
             <p className="font-semibold">
-              {size}, {flavour}
+              {size}g, {flavour}
             </p>
             <p className="font-semibold">₹{price}</p>
             <div className="flex rounded-md bg-[#3F72AF] text-[#dae0ef] font-semibold gap-1 items-center p-1 w-max">
