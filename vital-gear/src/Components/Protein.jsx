@@ -12,6 +12,7 @@ import Basics from "./Basics";
 import productsData from "./productsData.json";
 
 export default function Protein() {
+  
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
