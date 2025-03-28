@@ -1,41 +1,25 @@
 import React, { useState, useEffect } from "react";
-import axios from 'axios';
 import Header from "./Header";
 import Breadcrumb from "./Breadcrumb";
 import ShopItem from "./ShopItem";
-import Footer from "./Footer";
 import Pagination from "./Pagination";
 import ShoppingCart from "./ShoppingCart";
-import SignIn from "./SignIn";
-import SignUp from "./SignUp";
 import Basics from "./Basics";
+import fetchProducts from "../../controllers/fetchProduct";
 
 
 export default function ActiveWear() {
-    const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
   
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get('http://localhost:3000/displayProducts/pre-workout');
-        // console.log('Fetched data:', response.data);
-        const fetchedProducts = Array.isArray(response.data) ? response.data : response.data.data || [];
-        setProducts(fetchedProducts);
-        setLoading(false);
-      } catch (err) {
-        setError(err.message || 'Failed to fetch products');
-        setLoading(false);
-      }
-    };
-  
-    useEffect(() => {
-      fetchProducts();
-    }, []);
-  
-    if (loading) return <h1>Loading...</h1>;
-    if (error) return <h1>{error}</h1>;
-  
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+      fetchProducts('active-wear', setProducts, setLoading, setError);
+  }, []);
+
+  if (loading) return <h1>Loading...</h1>;
+  if (error) return <h1>{error}</h1>;
   
   return (
     <>

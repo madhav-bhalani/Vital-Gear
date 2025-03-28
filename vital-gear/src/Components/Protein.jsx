@@ -9,33 +9,42 @@ import SignIn from "./SignIn";
 import SignUp from "./SignUp";
 import ShoppingCart from "./ShoppingCart";
 import Basics from "./Basics";
-import productsData from "./productsData.json";
+import fetchProducts from '../../controllers/fetchProduct';
 
 export default function Protein() {
-  
+
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchProducts = async () => {
-    try {
-      const response = await axios.get('http://localhost:3000/displayProducts/protein');
-      // console.log('Fetched data:', response.data);
-      const fetchedProducts = Array.isArray(response.data) ? response.data : response.data.data || [];
-      setProducts(fetchedProducts);
-      setLoading(false);
-    } catch (err) {
-      setError(err.message || 'Failed to fetch products');
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchProducts();
+      fetchProducts('protein', setProducts, setLoading, setError);
   }, []);
 
   if (loading) return <h1>Loading...</h1>;
   if (error) return <h1>{error}</h1>;
+
+  
+
+  // const fetchProducts = async () => {
+  //   try {
+  //     const response = await axios.get('http://localhost:3000/displayProducts/protein');
+  //     // console.log('Fetched data:', response.data);
+  //     const fetchedProducts = Array.isArray(response.data) ? response.data : response.data.data || [];
+  //     setProducts(fetchedProducts);
+  //     setLoading(false);
+  //   } catch (err) {
+  //     setError(err.message || 'Failed to fetch products');
+  //     setLoading(false);
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   fetchProducts();
+  // }, []);
+
+  // if (loading) return <h1>Loading...</h1>;
+  // if (error) return <h1>{error}</h1>;
 
   return (
     <>

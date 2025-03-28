@@ -1,16 +1,25 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Header from "./Header";
 import Breadcrumb from "./Breadcrumb";
 import ShopItem from "./ShopItem";
-import Footer from "./Footer";
 import Pagination from "./Pagination";
 import ShoppingCart from "./ShoppingCart";
-import SignIn from "./SignIn";
-import SignUp from "./SignUp";
 import Basics from "./Basics";
+import fetchProducts from "../../controllers/fetchProduct";
 
 export default function Vitamins() {
-  let shopItem = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+      fetchProducts('vitamin', setProducts, setLoading, setError);
+  }, []);
+
+  if (loading) return <h1>Loading...</h1>;
+  if (error) return <h1>{error}</h1>;
+
   return (
     <>
       <Header />
@@ -36,19 +45,25 @@ export default function Vitamins() {
         </div>
         <div className="h-px bg-[#09274d] mt-3"></div>
 
-        <div className="flex flex-row flex-wrap gap-10 my-5">
-          {shopItem.map((product, i) => {
-            return (
-              <ShopItem
-                key={i}
-                image="/products/vitamin.webp"
-                title="VitalGear MB-Vite Multivitamin"
-                size="60 tablets"
-                price="699"
-              />
-            );
-          })}
-        </div>
+         <div className="flex flex-row flex-wrap gap-10 my-5">
+                    {products.length > 0 ? (
+                      products.map((product) => (
+                        <ShopItem
+                          key={product._id}
+                                image={product.images?.displayImage || 'default-image-url'}
+                                title={`${product.brandName || 'Unknown'} ${product.productName || 'Product'}`}
+                                size={product.sizes?.weight[0] || product.sizes?.shirtSize[1] || 'N/A'}
+                                flavour={product.productDetails?.flavours?.[0] || product.productDetails?.colors[0] || 'N/A'}
+                                price={product.price?.productPrice || 'N/A'}
+                                onSale={product.price.onSale}
+                              />
+                            ))
+                          ) : (
+                            <p>No products available</p>
+                          )}
+          </div>
+
+
       </div>
 
       <div className="pb-10">
