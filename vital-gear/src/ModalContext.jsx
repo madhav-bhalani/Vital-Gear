@@ -29,8 +29,8 @@ export const ModalProvider = ({ children }) => {
   const handleCart = () => setCartVisible(false);
 
   const [isSignIn, setSignIn] = useState(false);
-  const signInUser = () => setSignIn(true);
-  const removeSignIn = () => setSignIn(false);
+  // const signInUser = () => setSignIn(true);
+  // const removeSignIn = () => setSignIn(false);
 
   return (
     <ModalContext.Provider
