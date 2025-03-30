@@ -14,10 +14,8 @@ function Header() {
     removeSignIn,
   } = useModal();
 
-
-
-  // let firstName = "Madhav";
-  // let lastName = "Bhalani";
+  let firstName = "Madhav";
+  let lastName = "Bhalani";
 
   return (
     <>

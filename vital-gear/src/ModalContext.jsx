@@ -46,8 +46,6 @@ export const ModalProvider = ({ children }) => {
         handleCartClick,
         handleCart,
         isSignIn,
-        signInUser,
-        removeSignIn,
         setSignIn,
       }}
     >

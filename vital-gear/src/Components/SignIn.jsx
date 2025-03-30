@@ -4,42 +4,44 @@ import { useNavigate } from "react-router-dom";
 import "./SignIn.jsx";
 import { useModal } from "../ModalContext.jsx";
 
-
 export default function SignIn() {
-  const { isSignInVisible, handleCloseModal, setSignIn } =
-    useModal();
+  const { isSignInVisible, handleCloseModal, setSignIn } = useModal();
 
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [error, setError] = useState(null); // To display error messages
-    const navigate = useNavigate();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(null); // To display error messages
+  const navigate = useNavigate();
 
-    const handleLogin = async (e) => {
-      e.preventDefault();
-      setError(null); // Reset errors
-  
-      try {
-        const response = await axios.post("http://localhost:3000/login", {
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError(null); // Reset errors
+
+    try {
+      console.log("HG sending request");
+      const response = await axios.post(
+        "http://localhost:3000/login",
+        {
           username,
           password,
-        }, { withCredentials: true }); // Send cookies
-  
-        console.log("Login successful:", response.data);
-        setSignIn(true);
-        alert(response.data.message); // Show success message
-        
-        // Store token if needed
-        localStorage.setItem("authToken", response.data.token);
-  
-        // Navigate to home page after login
-        navigate("/");
-      } catch (err) {
-        console.error("Login failed:", err); // Log the entire error object
-        console.error("Error response:", err.response); // Log the response object if it exists
-        setError(err.response?.data?.message || "Something went wrong!");
-      }
-    };
-  
+        },
+        { withCredentials: true }
+      ); // Send cookies
+
+      console.log("Login successful:", response.data);
+      setSignIn(true);
+      alert(response.data.message); // Show success message
+
+      // Store token if needed
+      localStorage.setItem("authToken", response.data.token);
+
+      // Navigate to home page after login
+      navigate("/");
+    } catch (err) {
+      console.error("Login failed:", err); // Log the entire error object
+      console.error("Error response:", err.response); // Log the response object if it exists
+      setError(err.response?.data?.message || "Something went wrong!");
+    }
+  };
 
   return (
     <>
@@ -53,7 +55,6 @@ export default function SignIn() {
         className={`fixed left-[50%] duration-500 -translate-x-1/2 -translate-y-1/2 mx-auto min-w-[500px] max-w-lg px-4 py-16 sm:px-6 lg:px-8 ${
           isSignInVisible ? "top-[50%]" : "top-[-50%]"
         }`}
-        onClick={(e) => e.stopPropagation()}
       >
         <form
           onSubmit={handleLogin}
@@ -130,11 +131,7 @@ export default function SignIn() {
             </div>
           </div>
 
-          {error && (
-            <p className="text-center text-sm text-red-500">
-              {error}
-            </p>
-          )}
+          {error && <p className="text-center text-sm text-red-500">{error}</p>}
           <button
             type="submit"
             className="block w-full rounded-lg bg-[#09274d] px-5 py-3 text-sm font-semibold text-white"
