@@ -53,6 +53,9 @@ function Header() {
             <NavLink to="/Contact">
               <li className="hover:text-[#3F72AF]">Contact</li>
             </NavLink>
+            <NavLink to="/admin">
+              <li className="hover:text-[#3F72AF]">Dashboard</li>
+            </NavLink>
           </ul>
         </div>
 

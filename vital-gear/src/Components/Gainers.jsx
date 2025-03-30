@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import Header from "./Header";
 import Breadcrumb from "./Breadcrumb";
@@ -12,18 +11,16 @@ import Basics from "./Basics";
 import fetchProducts from "../../controllers/fetchProduct";
 
 export default function Gainers() {
- 
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-      fetchProducts('gainer', setProducts, setLoading, setError);
+    fetchProducts("gainer", setProducts, setLoading, setError);
   }, []);
 
   if (loading) return <h1>Loading...</h1>;
   if (error) return <h1>{error}</h1>;
-
 
   return (
     <>
@@ -51,33 +48,41 @@ export default function Gainers() {
         </div>
         <div className="h-px bg-[#09274d] mt-3"></div>
 
-         <div className="flex flex-row flex-wrap gap-10 my-5">
-                    {products.length > 0 ? (
-                      products.map((product) => (
-                        <ShopItem
-                          key={product._id}
-                                image={product.images?.displayImage || 'default-image-url'}
-                                title={`${product.brandName || 'Unknown'} ${product.productName || 'Product'}`}
-                                size={product.sizes?.weight[0] || product.sizes?.shirtSize[1] || 'N/A'}
-                                flavour={product.productDetails?.flavours?.[0] || product.productDetails?.colors[0] || 'N/A'}
-                                price={product.price?.productPrice || 'N/A'}
-                                onSale={product.price.onSale}
-                              />
-                            ))
-                          ) : (
-                            <p>No products available</p>
-                          )}
-          </div>
-        
+        <div className="flex flex-row flex-wrap gap-10 my-5">
+          {products.length > 0 ? (
+            products.map((product) => (
+              <ShopItem
+                key={product._id}
+                image={product.images[0].url || "default-image-url"}
+                title={`${product.brandName || "Unknown"} ${
+                  product.productName || "Product"
+                }`}
+                size={
+                  product.sizes?.weight[0] ||
+                  product.sizes?.shirtSize[1] ||
+                  "N/A"
+                }
+                flavour={
+                  product.productDetails?.flavours?.[0] ||
+                  product.productDetails?.colors[0] ||
+                  "N/A"
+                }
+                price={product.price?.productPrice || "N/A"}
+                onSale={product.price.onSale}
+              />
+            ))
+          ) : (
+            <p>No products available</p>
+          )}
+        </div>
       </div>
 
       <div className="pb-10">
         <Pagination />
       </div>
 
-      <Basics/>
+      <Basics />
       <ShoppingCart />
-      
     </>
   );
 }

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import Header from "./Header";
 import Breadcrumb from "./Breadcrumb";
@@ -9,22 +8,19 @@ import SignIn from "./SignIn";
 import SignUp from "./SignUp";
 import ShoppingCart from "./ShoppingCart";
 import Basics from "./Basics";
-import fetchProducts from '../../controllers/fetchProduct';
+import fetchProducts from "../../controllers/fetchProduct";
 
 export default function Protein() {
-
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-      fetchProducts('protein', setProducts, setLoading, setError);
+    fetchProducts("protein", setProducts, setLoading, setError);
   }, []);
 
   if (loading) return <h1>Loading...</h1>;
   if (error) return <h1>{error}</h1>;
-
-  
 
   // const fetchProducts = async () => {
   //   try {
@@ -80,10 +76,12 @@ export default function Protein() {
             products.map((product) => (
               <ShopItem
                 key={product._id}
-                image={product.images?.displayImage || 'default-image-url'}
-                title={`${product.brandName || 'Unknown'} ${product.productName || 'Product'}`}
-                size={product.sizes?.weight[1] || 'N/A'}
-                flavour={product.productDetails?.flavours?.[0] || 'N/A'}
+                image={product.images[0].url || "default-image-url"}
+                title={`${product.brandName || "Unknown"} ${
+                  product.productName || "Product"
+                }`}
+                size={product.sizes?.weight[1] || "N/A"}
+                flavour={product.productDetails?.flavours?.[0] || "N/A"}
                 price={product.price?.productPrice || 0}
                 onSale={product.price.onSale}
               />
