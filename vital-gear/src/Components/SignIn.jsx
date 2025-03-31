@@ -5,7 +5,15 @@ import "./SignIn.jsx";
 import { useModal } from "../ModalContext.jsx";
 
 export default function SignIn() {
-  const { isSignInVisible, handleCloseModal, addSignIn } = useModal();
+  const {
+    isSignInVisible,
+    handleCloseModal,
+    addSignIn,
+    setFname,
+    setLname,
+    fname,
+    lname,
+  } = useModal();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -27,12 +35,13 @@ export default function SignIn() {
         { withCredentials: true }
       ); // Send cookies
 
-      console.log("Login successful:", response.data);
+      // console.log("Login successful:", response.data.user);
+      setFname(response.data.user.firstName);
+      setLname(response.data.user.lastName);
+      // console.log("user: " + fname + " " + lname);
       addSignIn();
       handleCloseModal();
       alert(response.data.message); // Show success message
-
-      
 
       // Navigate to home page after login
       navigate("/");

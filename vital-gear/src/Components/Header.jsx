@@ -11,12 +11,13 @@ function Header() {
     handleSignUpClick,
     handleCartClick,
     isSignIn,
-    addSignIn,
+    fname,
+    lname,
     removeSignIn,
   } = useModal();
 
-  let firstName = "Madhav";
-  let lastName = "Bhalani";
+  let firstName = fname;
+  let lastName = lname;
 
   const handleLogout = async () => {
     try {

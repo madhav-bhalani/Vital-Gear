@@ -19,13 +19,14 @@ import SignUp from "./Components/SignUp";
 import Basics from "./Components/Basics";
 import AddProduct from "./Components/Dashboard/AddProduct";
 import AdminLayout from "./Components/Dashboard/Admin";
+import Dashboard from "./Components/Dashboard/Dashboard";
 
 const router = createBrowserRouter([
   {
     path: "/admin",
     element: <AdminLayout />,
     children: [
-      { index: true, element: <AddProduct /> },
+      { index: true, element: <Dashboard /> },
       // { path: "orders", element: <OrdersList /> },
       // { path: "products", element: <ProductsList /> },
       { path: "products/add", element: <AddProduct /> },

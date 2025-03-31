@@ -1,4 +1,5 @@
 import React from "react";
+import { use } from "react";
 import { useState } from "react";
 import { createContext } from "react";
 import { useContext } from "react";
@@ -32,6 +33,10 @@ export const ModalProvider = ({ children }) => {
   const addSignIn = () => setSignIn(true);
   const removeSignIn = () => setSignIn(false);
 
+  //for profile initials
+  const [fname, setFname] = useState("");
+  const [lname, setLname] = useState("");
+
   return (
     <ModalContext.Provider
       value={{
@@ -48,7 +53,11 @@ export const ModalProvider = ({ children }) => {
         isSignIn,
         setSignIn,
         addSignIn,
-        removeSignIn
+        removeSignIn,
+        setFname,
+        setLname,
+        fname,
+        lname,
       }}
     >
       {children}
