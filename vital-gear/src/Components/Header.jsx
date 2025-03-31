@@ -1,3 +1,4 @@
+import axios from "axios";
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { FaShoppingCart } from "react-icons/fa";
@@ -16,6 +17,24 @@ function Header() {
 
   let firstName = "Madhav";
   let lastName = "Bhalani";
+
+  const handleLogout = async () => {
+    try {
+      const response = await axios.post("http://localhost:3000/login/logout");
+
+      if (response.status === 200) {
+        console.log("Logout successful");
+        alert(response.data.message); // Show success message
+        localStorage.removeItem("authToken"); // Remove token if stored
+        removeSignIn(); // Update UI state after successful logout
+      } else {
+        console.error("Failed to logout");
+        alert(response.data.error); // Show error message
+      }
+    } catch (error) {
+      console.error("Error during logout:", error);
+    }
+  };
 
   return (
     <>
@@ -74,7 +93,7 @@ function Header() {
             {isSignIn ? (
               <>
                 <div className="flex flex-row gap-3 rounded-md bg-[#112D4E] text-[#DBE2EF] p-3">
-                  <button onClick={removeSignIn}>Sign Out</button>
+                  <button onClick={handleLogout}>Sign Out</button>
                   <div className="bg-[#DBE2EF] text-[#112D4E] p-2 rounded-full uppercase">
                     {firstName.charAt(0)}
                     {lastName.charAt(0)}

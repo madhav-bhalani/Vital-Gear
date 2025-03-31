@@ -1,9 +1,9 @@
+import axios from "axios";
 import React, { useState } from "react";
 import "./AddProduct.jsx";
-import Header from "../Header.jsx";
-import Basics from "../Basics.jsx";
 
 export default function AddProduct() {
+  
   const [productCategory, setProductCategory] = useState("");
 
   // Handle category change to show relevant fields
@@ -23,13 +23,17 @@ export default function AddProduct() {
   // Determine if it's activewear
   const isActiveWear = productCategory === "active-wear";
 
+  // Handle form submission
+
+
   return (
     <>
       <div className="container mx-auto py-8 px-4">
         <form
-          action="http://localhost:3000/products/add"
+          action="http://localhost:3000/products/new"
           method="post"
           className="bg-[#dae0ef] mb-0 mt-6 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8 max-w-3xl mx-auto"
+          encType="multipart/form-data"
         >
           <h1 className="text-center text-2xl font-bold text-[#09274d] sm:text-3xl">
             Add New Product
@@ -207,33 +211,18 @@ export default function AddProduct() {
 
           <div>
             <label
-              htmlFor="displayImage"
-              className="block text-sm font-medium text-gray-700"
-            >
-              Upload Display Image
-            </label>
-            <input
-              type="file"
-              id="displayImage"
-              name="images.displayImage"
-              className="w-full rounded-lg bg-[white] border-gray-200 p-4 text-sm shadow-sm"
-              placeholder="Main product image URL"
-            />
-          </div>
-
-          <div>
-            <label
-              htmlFor="sliderImages"
+              htmlFor="productImages"
               className="block text-sm font-medium text-gray-700"
             >
               Upload Slider Images
             </label>
             <input
               type="file"
-              id="sliderImages"
-              name="images.sliderImages"
+              id="productImages"
+              name="productImages"
               className="w-full rounded-lg bg-[white] border-gray-200 p-4 text-sm shadow-sm"
               placeholder="image1.jpg, image2.jpg, image3.jpg"
+              multiple
             />
           </div>
 
@@ -282,6 +271,7 @@ export default function AddProduct() {
                 id="onSale"
                 name="price.onSale"
                 className="rounded border-gray-300"
+                value={true}
               />
               <label
                 htmlFor="onSale"
@@ -296,6 +286,7 @@ export default function AddProduct() {
                 id="inStock"
                 name="stock.inStock"
                 className="rounded border-gray-300"
+                value={true}
                 defaultChecked
               />
               <label
