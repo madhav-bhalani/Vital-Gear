@@ -9,9 +9,9 @@ function Header() {
   const {
     handleLoginClick,
     handleSignUpClick,
-    userInfo,
     handleCartClick,
     isSignIn,
+    addSignIn,
     removeSignIn,
   } = useModal();
 
@@ -20,12 +20,17 @@ function Header() {
 
   const handleLogout = async () => {
     try {
-      const response = await axios.post("http://localhost:3000/login/logout");
+      const response = await axios.post(
+        "http://localhost:3000/logout",
+        {},
+        {
+          withCredentials: true,
+        }
+      );
 
       if (response.status === 200) {
         console.log("Logout successful");
         alert(response.data.message); // Show success message
-        localStorage.removeItem("authToken"); // Remove token if stored
         removeSignIn(); // Update UI state after successful logout
       } else {
         console.error("Failed to logout");

@@ -5,7 +5,7 @@ import "./SignIn.jsx";
 import { useModal } from "../ModalContext.jsx";
 
 export default function SignIn() {
-  const { isSignInVisible, handleCloseModal, setSignIn } = useModal();
+  const { isSignInVisible, handleCloseModal, addSignIn } = useModal();
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -28,11 +28,11 @@ export default function SignIn() {
       ); // Send cookies
 
       console.log("Login successful:", response.data);
-      setSignIn(true);
+      addSignIn();
+      handleCloseModal();
       alert(response.data.message); // Show success message
 
-      // Store token if needed
-      localStorage.setItem("authToken", response.data.token);
+      
 
       // Navigate to home page after login
       navigate("/");

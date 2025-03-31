@@ -3,7 +3,6 @@ import React, { useState } from "react";
 import "./AddProduct.jsx";
 
 export default function AddProduct() {
-  
   const [productCategory, setProductCategory] = useState("");
 
   // Handle category change to show relevant fields
@@ -24,7 +23,6 @@ export default function AddProduct() {
   const isActiveWear = productCategory === "active-wear";
 
   // Handle form submission
-
 
   return (
     <>
