@@ -20,6 +20,7 @@ import Basics from "./Components/Basics";
 import AddProduct from "./Components/Dashboard/AddProduct";
 import AdminLayout from "./Components/Dashboard/Admin";
 import Dashboard from "./Components/Dashboard/Dashboard";
+import ProductDashboard from "./Components/Dashboard/AdminProducts";
 
 const router = createBrowserRouter([
   {
@@ -28,7 +29,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Dashboard /> },
       // { path: "orders", element: <OrdersList /> },
-      // { path: "products", element: <ProductsList /> },
+      { path: "products", element: <ProductDashboard /> },
       { path: "products/add", element: <AddProduct /> },
       // { path: "products/edit", element: <EditProducts /> },
       // { path: "users", element: <UsersList /> },
