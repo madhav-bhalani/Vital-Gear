@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import "./AddProduct.jsx";
 
@@ -19,8 +20,73 @@ export default function AddProduct() {
     "vitamin",
   ].includes(productCategory);
 
+  const navigate = useNavigate();
+
   // Determine if it's activewear
   const isActiveWear = productCategory === "active-wear";
+
+  const [productName, setProductName] = useState("");
+  const [brandName, setBrandName] = useState("");
+  const [productDescription, setProductDescription] = useState("");
+  const [productPrice, setProductPrice] = useState("");
+  const [colors, setColors] = useState([]);
+  const [flavours, setFlavours] = useState([]);
+  const [shirtSizes, setShirtSizes] = useState([]);
+  const [weights, setWeights] = useState([]);
+  const [quantity, setQuantity] = useState("");
+  const [onSale, setOnSale] = useState(false);
+  const [inStock, setInStock] = useState(true);
+  
+  //for image upload
+  const [files, setFiles] = useState([]);
+
+  const handleFileChange = (e) => {
+    setFiles(Array.from(e.target.files));
+  };
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData();
+    files.forEach((file) => {
+      formData.append('images', file);
+    });
+    
+    formData.append('productName', productName);
+    formData.append('brandName', brandName);
+    formData.append('category', productCategory);
+    formData.append('description', productDescription);
+    formData.append('colors', colors);
+    formData.append('flavours', flavours);
+    formData.append('shirtSize', shirtSizes);
+    formData.append('weight', weights);
+    formData.append('productPrice', productPrice);
+    formData.append('quantity', quantity);
+    formData.append('onSale', onSale);
+    formData.append('inStock', inStock);
+
+    try{
+      const response = await axios.post("http://localhost:3000/products/new",
+        formData,
+        {
+          //form enc type
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      
+      console.log("Product data: ", response.data);
+
+      alert(response.data.message); // Show success message
+      // Redirect to the products page
+      navigate("/admin/products/add");
+    }
+    catch(err){
+      alert(err.response.data.error);
+      console.log(err.response.data.error);
+    }
+  }
 
   // Handle form submission
 
@@ -28,8 +94,7 @@ export default function AddProduct() {
     <>
       <div className="container mx-auto py-8 px-4">
         <form
-          action="http://localhost:3000/products/new"
-          method="post"
+          onSubmit={handleFormSubmit}
           className="bg-[#dae0ef] mb-0 mt-6 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8 max-w-3xl mx-auto"
           encType="multipart/form-data"
         >
@@ -55,6 +120,8 @@ export default function AddProduct() {
                 name="productName"
                 className="w-full rounded-lg border-gray-200 p-4 text-sm shadow-sm"
                 placeholder="Product Name"
+                value={productName}
+                onChange={(e) => setProductName(e.target.value)}
                 required
               />
             </div>
@@ -71,6 +138,8 @@ export default function AddProduct() {
                 name="brandName"
                 className="w-full rounded-lg border-gray-200 p-4 text-sm shadow-sm"
                 placeholder="Brand Name"
+                value={brandName}
+                onChange={(e) => setBrandName(e.target.value)}
                 required
               />
             </div>
@@ -114,6 +183,9 @@ export default function AddProduct() {
               className="w-full rounded-lg border-gray-200 p-4 text-sm shadow-sm"
               placeholder="Product Description"
               rows="3"
+              value={productDescription}
+              onChange={(e) => setProductDescription(e.target.value)}
+              required
             ></textarea>
           </div>
 
@@ -129,6 +201,7 @@ export default function AddProduct() {
                       type="checkbox"
                       name="productDetails.colors"
                       value={color}
+                      onChange={(e) => setColors([...colors, e.target.value])}
                       className="rounded border-gray-300"
                     />
                     <span className="text-sm">
@@ -153,6 +226,7 @@ export default function AddProduct() {
                         type="checkbox"
                         name="productDetails.flavours"
                         value={flavor}
+                        onChange={(e) =>setFlavours([...flavours, e.target.value])}
                         className="rounded border-gray-300"
                       />
                       <span className="text-sm">
@@ -177,6 +251,7 @@ export default function AddProduct() {
                       type="checkbox"
                       name="sizes.shirtSize"
                       value={size}
+                      onChange={(e) => setShirtSizes([...shirtSizes, e.target.value])}
                       className="rounded border-gray-300"
                     />
                     <span className="text-sm uppercase">{size}</span>
@@ -198,6 +273,7 @@ export default function AddProduct() {
                       type="checkbox"
                       name="sizes.weight"
                       value={weight}
+                      onChange={(e) => setWeights([...weights, e.target.value])}
                       className="rounded border-gray-300"
                     />
                     <span className="text-sm">{weight}g</span>
@@ -209,15 +285,17 @@ export default function AddProduct() {
 
           <div>
             <label
-              htmlFor="productImages"
+              htmlFor="images"
               className="block text-sm font-medium text-gray-700"
             >
               Upload Slider Images
             </label>
             <input
               type="file"
-              id="productImages"
-              name="productImages"
+              accept=".png, .jpg, .jpeg, .webp"
+              onChange={handleFileChange}
+              id="images"
+              name="images"
               className="w-full rounded-lg bg-[white] border-gray-200 p-4 text-sm shadow-sm"
               placeholder="image1.jpg, image2.jpg, image3.jpg"
               multiple
@@ -238,6 +316,8 @@ export default function AddProduct() {
                 name="price.productPrice"
                 className="w-full rounded-lg border-gray-200 p-4 text-sm shadow-sm"
                 placeholder="0.00"
+                value={productPrice}
+                onChange={(e) => setProductPrice(e.target.value)}
                 min="0"
                 step="0.01"
                 required
@@ -254,6 +334,8 @@ export default function AddProduct() {
                 type="number"
                 id="quantity"
                 name="stock.quantity"
+                value={quantity}
+                onChange={(e) => setQuantity(e.target.value)}
                 className="w-full rounded-lg border-gray-200 p-4 text-sm shadow-sm"
                 placeholder="0"
                 min="0"
@@ -269,7 +351,9 @@ export default function AddProduct() {
                 id="onSale"
                 name="price.onSale"
                 className="rounded border-gray-300"
-                value={true}
+                value={onSale}
+                onChange={(e) => setOnSale(e.target.checked)}
+                checked={onSale} 
               />
               <label
                 htmlFor="onSale"
@@ -284,8 +368,9 @@ export default function AddProduct() {
                 id="inStock"
                 name="stock.inStock"
                 className="rounded border-gray-300"
-                value={true}
-                defaultChecked
+                value={inStock}
+                onChange={(e) => setInStock(e.target.checked)}
+                checked={inStock} // Ensure the checkbox reflects the state
               />
               <label
                 htmlFor="inStock"
