@@ -11,6 +11,15 @@ export default function AddProduct() {
     setProductCategory(e.target.value);
   };
 
+  const handleCheckboxChange = (currentArray, setArray) => (e) => {
+    const value = e.target.value;
+    if (e.target.checked) {
+      setArray([...currentArray, value]);
+    } else {
+      setArray(currentArray.filter((item) => item !== value));
+    }
+  };
+
   // Determine if it's a supplement product
   const isSupplement = [
     "protein",
@@ -36,7 +45,7 @@ export default function AddProduct() {
   const [quantity, setQuantity] = useState("");
   const [onSale, setOnSale] = useState(false);
   const [inStock, setInStock] = useState(true);
-  
+
   //for image upload
   const [files, setFiles] = useState([]);
 
@@ -49,24 +58,29 @@ export default function AddProduct() {
 
     const formData = new FormData();
     files.forEach((file) => {
-      formData.append('images', file);
+      formData.append("images", file);
     });
-    
-    formData.append('productName', productName);
-    formData.append('brandName', brandName);
-    formData.append('category', productCategory);
-    formData.append('description', productDescription);
-    formData.append('colors', colors);
-    formData.append('flavours', flavours);
-    formData.append('shirtSize', shirtSizes);
-    formData.append('weight', weights);
-    formData.append('productPrice', productPrice);
-    formData.append('quantity', quantity);
-    formData.append('onSale', onSale);
-    formData.append('inStock', inStock);
 
-    try{
-      const response = await axios.post("http://localhost:3000/products/new",
+    formData.append("productName", productName);
+    formData.append("brandName", brandName);
+    formData.append("category", productCategory);
+    formData.append("productDetails.description", productDescription);
+    formData.append("productDetails.colors", colors);
+    formData.append("productDetails.flavours", flavours);
+    formData.append("sizes.shirtSize", shirtSizes);
+    formData.append("sizes.weight", weights);
+    formData.append("price.productPrice", parseFloat(productPrice));
+    formData.append("stock.quantity", parseFloat(quantity));
+    formData.append("price.onSale", onSale);
+    formData.append("stock.inStock", inStock);
+
+    for (let pair of formData.entries()) {
+      console.log(pair[0], pair[1]);
+    }
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/products/new",
         formData,
         {
           //form enc type
@@ -75,18 +89,17 @@ export default function AddProduct() {
           },
         }
       );
-      
+
       console.log("Product data: ", response.data);
 
       alert(response.data.message); // Show success message
       // Redirect to the products page
       navigate("/admin/products/add");
-    }
-    catch(err){
+    } catch (err) {
       alert(err.response.data.error);
       console.log(err.response.data.error);
     }
-  }
+  };
 
   // Handle form submission
 
@@ -201,7 +214,7 @@ export default function AddProduct() {
                       type="checkbox"
                       name="productDetails.colors"
                       value={color}
-                      onChange={(e) => setColors([...colors, e.target.value])}
+                      onChange={handleCheckboxChange(colors, setColors)}
                       className="rounded border-gray-300"
                     />
                     <span className="text-sm">
@@ -226,7 +239,7 @@ export default function AddProduct() {
                         type="checkbox"
                         name="productDetails.flavours"
                         value={flavor}
-                        onChange={(e) =>setFlavours([...flavours, e.target.value])}
+                        onChange={handleCheckboxChange(flavours, setFlavours)}
                         className="rounded border-gray-300"
                       />
                       <span className="text-sm">
@@ -251,7 +264,7 @@ export default function AddProduct() {
                       type="checkbox"
                       name="sizes.shirtSize"
                       value={size}
-                      onChange={(e) => setShirtSizes([...shirtSizes, e.target.value])}
+                      onChange={handleCheckboxChange(shirtSizes, setShirtSizes)}
                       className="rounded border-gray-300"
                     />
                     <span className="text-sm uppercase">{size}</span>
@@ -273,7 +286,7 @@ export default function AddProduct() {
                       type="checkbox"
                       name="sizes.weight"
                       value={weight}
-                      onChange={(e) => setWeights([...weights, e.target.value])}
+                      onChange={handleCheckboxChange(weights, setWeights)}
                       className="rounded border-gray-300"
                     />
                     <span className="text-sm">{weight}g</span>
@@ -353,7 +366,7 @@ export default function AddProduct() {
                 className="rounded border-gray-300"
                 value={onSale}
                 onChange={(e) => setOnSale(e.target.checked)}
-                checked={onSale} 
+                checked={onSale}
               />
               <label
                 htmlFor="onSale"
