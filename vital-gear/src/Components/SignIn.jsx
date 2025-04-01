@@ -10,9 +10,7 @@ export default function SignIn() {
     handleCloseModal,
     addSignIn,
     setFname,
-    setLname,
-    fname,
-    lname,
+    setLname
   } = useModal();
 
   const [username, setUsername] = useState("");

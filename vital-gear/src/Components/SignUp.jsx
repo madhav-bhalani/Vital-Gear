@@ -1,11 +1,47 @@
 import React, { useState } from "react";
+import axios from "axios";
 import "./SignUp.jsx";
+import { useNavigate } from "react-router-dom";
 import { useModal } from "../ModalContext.jsx";
 
 
 export default function SignUp() {
   const { isSignUpVisible, handleSignUpModal } = useModal();
 
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(null); // To display error messages
+  
+  const navigate = useNavigate();
+
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+    setError(null); // Reset errors
+
+    try{
+      const response = await axios.post("http://localhost:3000/register",
+        {
+          firstName,
+          lastName,
+          email,
+          phone,
+          password
+        },
+      );
+
+      handleSignUpModal();
+      alert(response.data.message); // Show success message
+      navigate("/");
+    }
+    catch(err){
+      console.error("Login failed:", err); // Log the entire error object
+      console.error("Error response:", err.response); // Log the response object if it exists
+      setError(err.response?.data?.message || "Something went wrong!");
+    }
+  };
 
   return (
     <>
@@ -21,8 +57,7 @@ export default function SignUp() {
         }`}
       >
         <form
-          action="http://localhost:3000/register"
-          method="post"
+          onSubmit={handleSignUp}
           className=" bg-[#dae0ef] mb-0 mt-6 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
         >
           <h1 className="text-center text-2xl font-bold text-[#09274d] sm:text-3xl">
@@ -50,6 +85,8 @@ export default function SignUp() {
                 name="fname"
                 className="w-full rounded-lg border-gray-200 p-4 text-sm shadow-sm"
                 placeholder="First Name"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
                 required
               />
             </div>
@@ -64,6 +101,8 @@ export default function SignUp() {
                 type="text"
                 id="lname"
                 name="lname"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
                 className="w-full rounded-lg border-gray-200 p-4 text-sm shadow-sm"
                 placeholder="Last Name"
                 required
@@ -83,6 +122,10 @@ export default function SignUp() {
                 type="email"
                 id="email"
                 name="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                title="Please enter a valid email address"
                 className="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
                 placeholder="Enter email"
               />
@@ -117,6 +160,10 @@ export default function SignUp() {
                 type="text"
                 id="phone"
                 name="phone"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                pattern="[0-9]{10}"
+                title="Please enter a valid 10-digit phone number"
                 className="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
                 placeholder="Enter phone number"
                 minLength={10}
@@ -154,6 +201,8 @@ export default function SignUp() {
                 type="password"
                 id="password"
                 name="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 className="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
                 placeholder="Create password"
                 minLength={8}
@@ -225,6 +274,7 @@ export default function SignUp() {
             </div>
           </div> */}
 
+          {error && <p className="text-center text-sm text-red-500">{error}</p>}
           <button
             type="submit"
             className="block w-full rounded-lg bg-[#09274d] px-5 py-3 text-sm font-semibold text-white"
