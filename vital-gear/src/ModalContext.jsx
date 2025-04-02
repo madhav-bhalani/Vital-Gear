@@ -41,8 +41,12 @@ export const ModalProvider = ({ children }) => {
   // const [productId, setProductId] = useState("");
 
   //password view hide
-  const[pass, setPass] = useState(false);
+  const [pass, setPass] = useState(false);
   const togglePass = () => setPass(!pass);
+
+  //breadCrumb
+  const [bread, setBread] = useState(false);
+  const toggleBread = () => setBread(!bread);
 
   return (
     <ModalContext.Provider
@@ -69,7 +73,9 @@ export const ModalProvider = ({ children }) => {
         // productId,
         // setProductId,
         pass,
-        togglePass
+        togglePass,
+        bread,
+        toggleBread,
       }}
     >
       {children}

@@ -69,6 +69,8 @@ export default function Gainers() {
                 }
                 price={product.price?.productPrice || "N/A"}
                 onSale={product.price.onSale}
+                id={product._id}
+                category={"Gainers"}
               />
             ))
           ) : (

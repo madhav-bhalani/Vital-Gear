@@ -83,6 +83,7 @@ export default function Protein() {
                 price={product.price?.productPrice || 0}
                 onSale={product.price.onSale}
                 id = {product._id}
+                category={"Proteins"}
               />
             ))
           ) : (

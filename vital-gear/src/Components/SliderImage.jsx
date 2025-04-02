@@ -3,7 +3,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-export default function SliderImage() {
+export default function SliderImage({ imageUrl }) {
   const settings = {
     dots: false,
     infinite: true,
@@ -12,7 +12,8 @@ export default function SliderImage() {
     slidesToScroll: 1,
   };
 
-  
+  console.log(imageUrl);
+
   return (
     <>
       <div className="basis-[40%] w-[500px] flex flex-col gap-5">
@@ -35,18 +36,13 @@ export default function SliderImage() {
               `}
           </style>
           <Slider {...settings}>
-            <div>
-              <img src="/products/protein.jpg" alt="" className="rounded-md" />
-            </div>
-            <div>
-              <img src="/products/protein.jpg" alt="" className="rounded-md" />
-            </div>
-            <div>
-              <img src="/products/protein.jpg" alt="" className="rounded-md" />
-            </div>
-            <div>
-              <img src="/products/protein.jpg" alt="" className="rounded-md" />
-            </div>
+            {imageUrl.map((img, index) => {
+              return (
+                <div key={index}>
+                  <img src={img.url} alt="" className="rounded-md" />
+                </div>
+              );
+            })}
           </Slider>
         </div>
         <div>

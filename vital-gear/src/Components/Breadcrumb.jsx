@@ -1,10 +1,12 @@
 import React from "react";
 import { useLocation } from "react-router-dom";
 import { NavLink } from "react-router-dom";
+import { useModal } from "../ModalContext";
 
-export default function Breadcrumb() {
+export default function Breadcrumb({ productTitle }) {
   const location = useLocation();
   const state = location.state;
+  const { bread } = useModal();
 
   return (
     <nav aria-label="Breadcrumb" className="flex">
@@ -45,16 +47,17 @@ export default function Breadcrumb() {
           </NavLink>
         </li>
 
-        {/* <li className="relative flex items-center">
+        <li className="relative flex items-center">
           <span className="absolute inset-y-0 -start-px h-10 w-4 bg-[#3F72AF] [clip-path:_polygon(0_0,_0%_100%,_100%_50%)] rtl:rotate-180"></span>
 
           <NavLink
-
-            className="flex h-10 items-center bg-[#DBE2EF] pe-4 ps-8 text-sm font-medium transition text-[#112D4E]"
+            className={`flex h-10 items-center bg-[#DBE2EF] pe-4 ps-8 text-sm font-medium transition text-[#112D4E] ${
+              bread ? "visible" : "hidden"
+            }`}
           >
-            VitalGear Biozyme Performance Whey
+            {productTitle}
           </NavLink>
-        </li> */}
+        </li>
       </ol>
     </nav>
   );
