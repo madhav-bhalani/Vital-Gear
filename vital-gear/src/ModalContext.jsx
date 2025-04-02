@@ -37,6 +37,13 @@ export const ModalProvider = ({ children }) => {
   const [fname, setFname] = useState("");
   const [lname, setLname] = useState("");
 
+  //for single product
+  const [productId, setProductId] = useState("");
+
+  //password view hide
+  const[pass, setPass] = useState(false);
+  const togglePass = () => setPass(!pass);
+
   return (
     <ModalContext.Provider
       value={{
@@ -58,7 +65,11 @@ export const ModalProvider = ({ children }) => {
         setLname,
         fname,
         lname,
-        setIsSignInVisible
+        setIsSignInVisible,
+        productId,
+        setProductId,
+        pass,
+        togglePass
       }}
     >
       {children}

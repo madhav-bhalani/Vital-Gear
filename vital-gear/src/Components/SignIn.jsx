@@ -10,7 +10,9 @@ export default function SignIn() {
     handleCloseModal,
     addSignIn,
     setFname,
-    setLname
+    setLname,
+    pass,
+    togglePass
   } = useModal();
 
   const [username, setUsername] = useState("");
@@ -104,7 +106,7 @@ export default function SignIn() {
           <div>
             <div className="relative">
               <input
-                type="password"
+                type={pass ? "text" : "password"}
                 name="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -113,7 +115,7 @@ export default function SignIn() {
                 minLength={8}
                 required
               />
-              <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
+              <span className="absolute inset-y-0 end-0 grid place-content-center px-4" onClick={togglePass}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="size-4 text-gray-400"

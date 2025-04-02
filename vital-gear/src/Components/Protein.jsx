@@ -6,6 +6,7 @@ import Pagination from "./Pagination";
 import ShoppingCart from "./ShoppingCart";
 import Basics from "./Basics";
 import fetchProducts from "../../controllers/fetchProduct";
+import { useModal } from "../ModalContext";
 
 export default function Protein() {
   const [products, setProducts] = useState([]);
@@ -81,6 +82,7 @@ export default function Protein() {
                 flavour={product.productDetails?.flavours?.[0] || "N/A"}
                 price={product.price?.productPrice || 0}
                 onSale={product.price.onSale}
+                id = {product._id}
               />
             ))
           ) : (

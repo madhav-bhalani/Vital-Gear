@@ -1,7 +1,8 @@
 import React from "react";
 import { FaStar } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import {useModal} from "../ModalContext";
 
 export default function ShopItem({
   image,
@@ -10,7 +11,14 @@ export default function ShopItem({
   flavour,
   price,
   onSale,
+  id
 }) {
+    // const navigate = useNavigate();
+    // const handleBuyNow = () => {
+    //   navigate(`/products/${id}`);
+    // }
+    const {setProductId} = useModal();
+
   return (
     <>
       <div className="flex flex-col gap-5 bg-[#dae0ef] max-w-lg p-5 rounded-md text-[#09274d]">
@@ -50,9 +58,11 @@ export default function ShopItem({
         <div className="flex flex-row justify-center gap-5">
           {/* <button>Buy Now</button>
             <button>Add to Cart</button> */}
-          <NavLink to="/Proteins/BuyProduct" state={"Proteins"}>
-            <button className="cursor-pointer relative group overflow-hidden border-2 px-8 py-2 border-[#09274d] rounded-full basis-[40%]">
-              <span className="font-bold text-[#dae0ef] text-xl relative z-10 group-hover:text-[#09274d] duration-50 uppercase">
+          <NavLink to="/Products" state={"Proteins"}>
+            <button className="cursor-pointer relative group overflow-hidden border-2 px-8 py-2 border-[#09274d] rounded-full basis-[40%]" 
+             onClick={() => setProductId(id)}>
+              <span className="font-bold text-[#dae0ef] text-xl relative z-10 group-hover:text-[#09274d] duration-50 uppercase"
+              >
                 Buy Now
               </span>
               <span className="absolute top-0 left-0 w-full bg-[#09274d] duration-500 group-hover:-translate-x-full h-full"></span>

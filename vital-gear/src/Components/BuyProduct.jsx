@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 
 import Header from "./Header";
 import SignIn from "./SignIn";
@@ -6,13 +6,17 @@ import Footer from "./Footer";
 import SignUp from "./SignUp";
 import Breadcrumb from "./Breadcrumb";
 import { FaStar } from "react-icons/fa";
-import { useState } from "react";
 import { FaCheckCircle, FaUndo, FaTruck } from "react-icons/fa";
 import ProductsBS from "./ProductsBS";
 import SliderImage from "./SliderImage";
-import ShoppingCart from "./ShoppingCart";
+import singleProduct from "../../controllers/singleProduct";
+import { useModal } from "../ModalContext";
 
 export default function BuyProduct() {
+  const {productId} = useModal();
+  const [product, setProduct] = useState([]);
+  // const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
 
   const handleQuantityChange = (amount) => {
@@ -24,11 +28,21 @@ export default function BuyProduct() {
 
   let bestSelling = [1, 2, 3, 4];
 
+  useEffect(() => {
+    singleProduct(productId, setProduct, setError);
+  }, [productId]);
+
+  // if (loading) return <h1>Loading...</h1>;
+  if (error) return <h1>{error}</h1>;
+
   return (
     <>
       <Header />
 
-      <div className="mx-32 my-16">
+      {
+        product ? (
+        <>
+          <div className="mx-32 my-16">
         <Breadcrumb />
         <div className="flex flex-row mt-10 gap-16 text-[#112D4E]">
           <SliderImage />
@@ -36,7 +50,7 @@ export default function BuyProduct() {
             <div className="flex flex-col gap-5">
               <p className="text-lg">Proteins</p>
               <p className="text-4xl font-bold">
-                VitalGear Bizoyme Performance Whey, 4.4lb, Chocolate Hazelnut
+                {product.brandName + " " + product.productName}, {product.sizes?.weight[1]}g, {product.productDetails?.flavours?.[0]}
                 <span>
                   <div className="flex gap-1 items-center p-1 w-max">
                     <p className="pt-1 font-semibold text-lg">4.5</p>
@@ -48,7 +62,7 @@ export default function BuyProduct() {
               </p>
 
               <p className="text-2xl font-semibold flex flex-col">
-                MRP: ₹6499
+                MRP: ₹{product.price?.productPrice}
                 <span className="text-sm font-normal">Inclusive all taxes</span>
               </p>
 
@@ -58,9 +72,12 @@ export default function BuyProduct() {
                     <span className="border-b-4 border-[#3F72AF]">Weight</span>
                   </p>
                   <select className="w-max rounded-lg border-gray-200 bg-[#DBE2EF] p-3 text-md shadow-sm">
-                    <option value="2lb">2 lb</option>
-                    <option value="4.4lb">4.4 lb</option>
-                    <option value="6lb">6 lb</option>
+                    {product.sizes?.weight.map((w, i)=>{
+                      console.log(w);
+                      return (<option key={i} value={w}>
+                          {w} g
+                        </option>);
+                    })}
                   </select>
                 </div>
                 <div className="flex flex-col gap-3">
@@ -68,10 +85,13 @@ export default function BuyProduct() {
                     <span className="border-b-4 border-[#3F72AF]">Flavour</span>{" "}
                   </p>
                   <select className="w-max rounded-lg border-gray-200 bg-[#DBE2EF] p-3 text-md shadow-sm">
-                    <option value="chocolate">Chocolate</option>
-                    <option value="vanilla">Vanilla</option>
-                    <option value="strawberry">Strawberry</option>
-                    <option value="hazelnut">Hazelnut</option>
+                    {product.productDetails?.flavours.map((f, i)=>{
+                      return (
+                        <>
+                        <option key={i} value={f}>{f}</option>
+                        </>
+                      )
+                    })}
                   </select>
                 </div>
               </div>
@@ -179,9 +199,14 @@ export default function BuyProduct() {
             </div>
           </div>
         </div>
-      </div>
+          </div>
+      </> ) : (
+        <>
+          <p>No data available</p>
+        </>
+      )}
+      
       <Footer />
-      <ShoppingCart />
       <SignIn />
       <SignUp />
     </>

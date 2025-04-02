@@ -6,13 +6,14 @@ import { useModal } from "../ModalContext.jsx";
 
 
 export default function SignUp() {
-  const { isSignUpVisible, handleSignUpModal, setIsSignInVisible } = useModal();
+  const { isSignUpVisible, handleSignUpModal, setIsSignInVisible, pass, togglePass } = useModal();
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPass, setconfirmPass] = useState("");
   const [error, setError] = useState(null); // To display error messages
   
   const navigate = useNavigate();
@@ -28,7 +29,8 @@ export default function SignUp() {
           lastName,
           email,
           phone,
-          password
+          password,
+          confirmPass
         },
       );
 
@@ -171,22 +173,6 @@ export default function SignUp() {
                 maxLength={10}
                 required
               />
-              <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
-                {/* <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="size-4 text-gray-400"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
-                  />
-                </svg> */}
-              </span>
             </div>
           </div>
 
@@ -199,7 +185,7 @@ export default function SignUp() {
             </label>
             <div className="relative">
               <input
-                type="password"
+                type={!pass ? "password" : "text"}
                 id="password"
                 name="password"
                 value={password}
@@ -209,7 +195,7 @@ export default function SignUp() {
                 minLength={8}
                 required
               />
-              <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
+              <span className="absolute inset-y-0 end-0 grid place-content-center px-4" onClick={togglePass}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="size-4 text-gray-400"
@@ -234,23 +220,26 @@ export default function SignUp() {
             </div>
           </div>
 
-          {/* <div>
+          <div>
             <label
-              htmlFor="password-confirm"
+              htmlFor="confirmPassword"
               className="block text-sm font-medium text-gray-700"
             >
               Confirm Password
             </label>
             <div className="relative">
               <input
-                type="password"
-                id="password-confirm"
+                type={!pass ? "password" : "text"}
+                id="confirmPassword"
+                name="confirmPassword"
+                value={confirmPass}
+                onChange={(e) => setconfirmPass(e.target.value)}
                 className="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
                 placeholder="Confirm password"
                 minLength={8}
                 required
               />
-              <span className="absolute inset-y-0 end-0 grid place-content-center px-4">
+              <span className="absolute inset-y-0 end-0 grid place-content-center px-4" onClick={togglePass}>
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="size-4 text-gray-400"
@@ -273,7 +262,8 @@ export default function SignUp() {
                 </svg>
               </span>
             </div>
-          </div> */}
+          </div>
+
 
           {error && <p className="text-center text-sm text-red-500">{error}</p>}
           <button

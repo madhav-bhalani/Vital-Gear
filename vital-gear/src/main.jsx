@@ -66,7 +66,7 @@ const router = createBrowserRouter([
     element: <ActiveWear />,
   },
   {
-    path: "/Proteins/BuyProduct",
+    path: "/Products",
     element: <BuyProduct />,
   },
   {
