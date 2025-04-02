@@ -38,7 +38,7 @@ export const ModalProvider = ({ children }) => {
   const [lname, setLname] = useState("");
 
   //for single product
-  const [productId, setProductId] = useState("");
+  // const [productId, setProductId] = useState("");
 
   //password view hide
   const[pass, setPass] = useState(false);
@@ -66,8 +66,8 @@ export const ModalProvider = ({ children }) => {
         fname,
         lname,
         setIsSignInVisible,
-        productId,
-        setProductId,
+        // productId,
+        // setProductId,
         pass,
         togglePass
       }}

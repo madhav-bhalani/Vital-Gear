@@ -2,7 +2,6 @@ import React from "react";
 import { FaStar } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa";
 import { NavLink, useNavigate } from "react-router-dom";
-import {useModal} from "../ModalContext";
 
 export default function ShopItem({
   image,
@@ -13,11 +12,6 @@ export default function ShopItem({
   onSale,
   id
 }) {
-    // const navigate = useNavigate();
-    // const handleBuyNow = () => {
-    //   navigate(`/products/${id}`);
-    // }
-    const {setProductId} = useModal();
 
   return (
     <>
@@ -58,9 +52,8 @@ export default function ShopItem({
         <div className="flex flex-row justify-center gap-5">
           {/* <button>Buy Now</button>
             <button>Add to Cart</button> */}
-          <NavLink to="/Products" state={"Proteins"}>
-            <button className="cursor-pointer relative group overflow-hidden border-2 px-8 py-2 border-[#09274d] rounded-full basis-[40%]" 
-             onClick={() => setProductId(id)}>
+          <NavLink to={`/Products/${id}`} state={"Proteins"}>
+            <button className="cursor-pointer relative group overflow-hidden border-2 px-8 py-2 border-[#09274d] rounded-full basis-[40%]" >
               <span className="font-bold text-[#dae0ef] text-xl relative z-10 group-hover:text-[#09274d] duration-50 uppercase"
               >
                 Buy Now

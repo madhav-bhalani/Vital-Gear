@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const singleProduct = async (productId, setProducts, setError)=>{
+const singleProduct = async (productId, setLoading, setProducts, setError)=>{
     try{
         console.log("this is id "+productId);
         // setLoading(true);
@@ -15,9 +15,9 @@ const singleProduct = async (productId, setProducts, setError)=>{
     }catch(err){
         setError(err.message || "Failed to fetch product"); 
     }
-    // finally{
-    //     setLoading(false);
-    // }
+    finally{
+        setLoading(false);
+    }
 };
 
 export default singleProduct;

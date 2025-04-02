@@ -10,12 +10,11 @@ import { FaCheckCircle, FaUndo, FaTruck } from "react-icons/fa";
 import ProductsBS from "./ProductsBS";
 import SliderImage from "./SliderImage";
 import singleProduct from "../../controllers/singleProduct";
-import { useModal } from "../ModalContext";
+import { useParams } from "react-router-dom";
 
 export default function BuyProduct() {
-  const {productId} = useModal();
   const [product, setProduct] = useState([]);
-  // const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
 
@@ -28,11 +27,15 @@ export default function BuyProduct() {
 
   let bestSelling = [1, 2, 3, 4];
 
+  const { productId } = useParams();
+
   useEffect(() => {
-    singleProduct(productId, setProduct, setError);
+    if(productId){
+      singleProduct(productId, setLoading, setProduct, setError);
+    }
   }, [productId]);
 
-  // if (loading) return <h1>Loading...</h1>;
+  if (loading) return <h1>Loading...</h1>;
   if (error) return <h1>{error}</h1>;
 
   return (
