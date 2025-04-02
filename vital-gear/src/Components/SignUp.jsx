@@ -6,7 +6,7 @@ import { useModal } from "../ModalContext.jsx";
 
 
 export default function SignUp() {
-  const { isSignUpVisible, handleSignUpModal } = useModal();
+  const { isSignUpVisible, handleSignUpModal, setIsSignInVisible } = useModal();
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -35,6 +35,7 @@ export default function SignUp() {
       handleSignUpModal();
       alert(response.data.message); // Show success message
       navigate("/");
+      setIsSignInVisible(true)
     }
     catch(err){
       console.error("Login failed:", err); // Log the entire error object

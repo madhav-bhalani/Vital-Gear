@@ -37,12 +37,12 @@ export default function AddProduct() {
   const [productName, setProductName] = useState("");
   const [brandName, setBrandName] = useState("");
   const [productDescription, setProductDescription] = useState("");
-  const [productPrice, setProductPrice] = useState("");
+  const [productPrice, setProductPrice] = useState(0);
   const [colors, setColors] = useState([]);
   const [flavours, setFlavours] = useState([]);
   const [shirtSizes, setShirtSizes] = useState([]);
   const [weights, setWeights] = useState([]);
-  const [quantity, setQuantity] = useState("");
+  const [quantity, setQuantity] = useState(0);
   const [onSale, setOnSale] = useState(false);
   const [inStock, setInStock] = useState(true);
 
@@ -65,12 +65,35 @@ export default function AddProduct() {
     formData.append("brandName", brandName);
     formData.append("category", productCategory);
     formData.append("productDetails.description", productDescription);
-    formData.append("productDetails.colors", colors);
-    formData.append("productDetails.flavours", flavours);
-    formData.append("sizes.shirtSize", shirtSizes);
-    formData.append("sizes.weight", weights);
-    formData.append("price.productPrice", parseFloat(productPrice));
-    formData.append("stock.quantity", parseFloat(quantity));
+
+    // Append colors only if the category is active-wear
+    if (isActiveWear) {
+      colors.forEach((color) => formData.append("productDetails.colors", color));
+    }
+
+    // Append flavours only if the category is a supplement
+    if (isSupplement) {
+      flavours.forEach((flavour) =>
+      formData.append("productDetails.flavours", flavour)
+      );
+    }
+
+    // Append shirt sizes only if the category is active-wear
+    if (isActiveWear) {
+      shirtSizes.forEach((size) =>
+      formData.append("sizes.shirtSize", size)
+      );
+    }
+
+    // Append weights only if the category is a supplement
+    if (isSupplement) {
+      weights.forEach((weight) =>
+      formData.append("sizes.weight", weight)
+      );
+    }
+
+    formData.append("price.productPrice", productPrice);
+    formData.append("stock.quantity", quantity);
     formData.append("price.onSale", onSale);
     formData.append("stock.inStock", inStock);
 
@@ -80,7 +103,7 @@ export default function AddProduct() {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/products/new",
+        "http://localhost:3000/products",
         formData,
         {
           //form enc type

@@ -61,8 +61,11 @@ function Header() {
                   <NavLink to="/Gainers" state={"Gainers"}>
                     <li className="hover:text-[#3F72AF]">Gainers</li>
                   </NavLink>
-                  <NavLink to="/PrePostWorkouts" state={"PrePostWorkouts"}>
-                    <li className="hover:text-[#3F72AF]">Pre/Post Workouts</li>
+                  <NavLink to="/PreWorkouts" state={"PrePostWorkouts"}>
+                    <li className="hover:text-[#3F72AF]">Pre Workouts</li>
+                  </NavLink>
+                  <NavLink to="/PostWorkouts" state={"PrePostWorkouts"}>
+                    <li className="hover:text-[#3F72AF]">Post Workouts</li>
                   </NavLink>
                   <NavLink to="/Vitamins" state={"Vitamins"}>
                     <li className="hover:text-[#3F72AF]">

@@ -6,8 +6,9 @@ import "./App.css";
 import Protein from "./Components/Protein";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Gainers from "./Components/Gainers";
-import PrePostWorkouts from "./Components/PrePostWorkouts";
 import Vitamins from "./Components/Vitamins";
+import PreWorkouts from "./Components/PreWorkouts";
+import PostWorkouts from "./Components/PostWorkouts";
 import ActiveWear from "./Components/ActiveWear";
 import { ModalProvider } from "./ModalContext";
 import BuyProduct from "./Components/BuyProduct";
@@ -49,8 +50,12 @@ const router = createBrowserRouter([
     element: <Gainers />,
   },
   {
-    path: "/PrePostWorkouts",
-    element: <PrePostWorkouts />,
+    path: "/PreWorkouts",
+    element: <PreWorkouts />,
+  },
+  {
+    path: "/PostWorkouts",
+    element: <PostWorkouts />,
   },
   {
     path: "/Vitamins",

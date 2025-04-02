@@ -56,12 +56,12 @@ export default function Vitamins() {
                 size={
                   product.sizes?.weight[0] ||
                   product.sizes?.shirtSize[1] ||
-                  "N/A"
+                  " "
                 }
                 flavour={
                   product.productDetails?.flavours?.[0] ||
                   product.productDetails?.colors[0] ||
-                  "N/A"
+                  " "
                 }
                 price={product.price?.productPrice || "N/A"}
                 onSale={product.price.onSale}

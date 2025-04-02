@@ -19,7 +19,7 @@ export default function ShopItem({
             <img
               src={image}
               alt="protein-powder"
-              className="w-[269px] h-full rounded-md"
+              className="w-[300px] h-[212px] rounded-md"
             />
             <span
               className={`absolute top-2 left-2 bg-[#09274d] text-white text-xs font-bold px-2 py-1 rounded-full ${

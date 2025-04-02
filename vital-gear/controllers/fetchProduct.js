@@ -4,7 +4,7 @@ const fetchProducts = async (category, setProducts, setLoading, setError) => {
   try {
     setLoading(true);
     const response = await axios.get(
-      `http://localhost:3000/products/${category}`
+      `http://localhost:3000/products/category/${category}`
     );
     const fetchedProducts = Array.isArray(response.data)
       ? response.data

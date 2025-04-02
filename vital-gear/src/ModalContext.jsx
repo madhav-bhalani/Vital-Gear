@@ -58,6 +58,7 @@ export const ModalProvider = ({ children }) => {
         setLname,
         fname,
         lname,
+        setIsSignInVisible
       }}
     >
       {children}

@@ -1,16 +1,21 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import Header from "./Header";
 import Breadcrumb from "./Breadcrumb";
 import ShopItem from "./ShopItem";
-import Footer from "./Footer";
+import fetchProducts from "../../controllers/fetchProduct";
 import Pagination from "./Pagination";
 import ShoppingCart from "./ShoppingCart";
-import SignIn from "./SignIn";
-import SignUp from "./SignUp";
+
 import Basics from "./Basics";
 
-export default function PrePostWorkouts() {
-  let shopItem = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+export default function PostWorkouts() {
+  const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+  
+    useEffect(() => {
+      fetchProducts("post-workout", setProducts, setLoading, setError);
+    }, []);
   return (
     <>
       <Header />
@@ -19,7 +24,7 @@ export default function PrePostWorkouts() {
         <div className="py-5">
           <span className="flex items-center">
             <span className="pr-6 text-4xl font-bold text-[#09274d]">
-              VitalGear Pre & Post Workouts
+              VitalGear Post Workouts
             </span>
             <span className="h-px flex-1 bg-[#09274d]"></span>
           </span>
@@ -37,19 +42,24 @@ export default function PrePostWorkouts() {
         <div className="h-px bg-[#09274d] mt-3"></div>
 
         <div className="flex flex-row flex-wrap gap-10 my-5">
-          {shopItem.map((product, i) => {
-            return (
-              <ShopItem
-                key={i}
-                image="/products/creatine.webp"
-                title="VitalGear Creatine & Shaker Combo"
-                size="0.55lb"
-                flavour="Unflavoured"
-                price="1898"
-              />
-            );
-          })}
-        </div>
+                  {products.length > 0 ? (
+                    products.map((product) => (
+                      <ShopItem
+                        key={product._id}
+                        image={product.images[0].url || "default-image-url"}
+                        title={`${product.brandName || "Unknown"} ${
+                          product.productName || "Product"
+                        }`}
+                        size={product.sizes?.weight[1] || "N/A"}
+                        flavour={product.productDetails?.flavours?.[0] || "N/A"}
+                        price={product.price?.productPrice || 0}
+                        onSale={product.price.onSale}
+                      />
+                    ))
+                  ) : (
+                    <p>No products available</p>
+                  )}
+                </div>
       </div>
 
       <div className="pb-10">
