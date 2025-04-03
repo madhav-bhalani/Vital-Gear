@@ -181,11 +181,12 @@ export default function BuyProduct() {
                         About the Product{" "}
                       </span>
                       <span className="font-semibold text-sm">
-                        Biozyme Performance Whey
+                        {product.productName}
                       </span>
                     </p>
                     <p>
-                      VitalGear Biozyme Performance Whey is crafted exclusively
+                      {product.productDetails?.description}
+                      {/* VitalGear Biozyme Performance Whey is crafted exclusively
                       for fitness and muscle-building champions who want their
                       protein supplement to be as effective as their efforts. It
                       is scientifically designed with Enhanced Absorption
@@ -193,7 +194,7 @@ export default function BuyProduct() {
                       for the Indian bodies. It’s a part of Vital Gear's
                       pioneering innovation- the BIOZYME series. The other
                       fitness supplements in this iconic series are Biozyme Whey
-                      Iso-Zero & Biozyme Whey Protein.
+                      Iso-Zero & Biozyme Whey Protein. */}
                     </p>
                   </div>
 

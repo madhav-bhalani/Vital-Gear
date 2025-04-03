@@ -22,6 +22,7 @@ import AddProduct from "./Components/Dashboard/AddProduct";
 import AdminLayout from "./Components/Dashboard/Admin";
 import Dashboard from "./Components/Dashboard/Dashboard";
 import ProductDashboard from "./Components/Dashboard/AdminProducts";
+import EditProduct from "./Components/Dashboard/EditProduct";
 
 const router = createBrowserRouter([
   {
@@ -32,7 +33,7 @@ const router = createBrowserRouter([
       // { path: "orders", element: <OrdersList /> },
       { path: "products", element: <ProductDashboard /> },
       { path: "products/add", element: <AddProduct /> },
-      // { path: "products/edit", element: <EditProducts /> },
+      { path: "products/edit/:id", element: <EditProduct /> },
       // { path: "users", element: <UsersList /> },
       // { path: "settings", element: <Settings /> },
     ],

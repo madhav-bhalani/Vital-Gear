@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Search, Edit, Trash, Filter, ArrowUpDown } from 'lucide-react';
 import allProducts from '../../../controllers/Admin/allProducts';
+import { NavLink } from 'react-router-dom';
 
 export default function ProductDashboard() {
   // Minimal sample data (you'll replace this with MongoDB data)
@@ -180,7 +181,7 @@ export default function ProductDashboard() {
               </thead>
               <tbody>
                 {products.map((product) => (
-                  <tr key={product.id} className="bg-white border-b hover:bg-gray-50">
+                  <tr key={product._id} className="bg-white border-b hover:bg-gray-50">
                     <td className="px-6 py-4 font-medium text-gray-900">{product.productName}</td>
                     <td className="px-6 py-4">{product.brandName}</td>
                     <td className="px-6 py-4">
@@ -200,12 +201,15 @@ export default function ProductDashboard() {
                     {/* <td className="px-6 py-4 font-medium">${product.revenue.toLocaleString()}</td> */}
                     <td className="px-6 py-4">
                       <div className="flex space-x-2">
-                        <button 
-                          onClick={() => handleEdit(product.id)} 
-                          className="p-1 text-blue-600 hover:bg-blue-100 rounded-md"
-                        >
-                          <Edit size={16} />
-                        </button>
+                        {/* edit button */}
+                        <NavLink to={`/admin/products/edit/${product._id}`} >
+                          <button 
+                          // onClick={() => handleEdit(product.id)} 
+                            className="p-1 text-blue-600 hover:bg-blue-100 rounded-md"
+                          >
+                            <Edit size={16} />
+                          </button>
+                        </NavLink>
                         <button 
                           onClick={() => handleDelete(product.id)} 
                           className="p-1 text-red-600 hover:bg-red-100 rounded-md"
