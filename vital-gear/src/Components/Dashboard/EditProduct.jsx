@@ -8,7 +8,7 @@ import singleProduct from "../../../controllers/singleProduct.js";
 export default function EditProduct() {
   const [productCategory, setProductCategory] = useState("");
 
-  const {id} = useParams();
+  const { id } = useParams();
 
   // Handle category change to show relevant fields
   const handleCategoryChange = (e) => {
@@ -38,8 +38,6 @@ export default function EditProduct() {
   const [product, setProduct] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
- 
 
   // Determine if it's activewear
   const isActiveWear = productCategory === "active-wear";
@@ -75,6 +73,7 @@ export default function EditProduct() {
       console.log(`These here: ${key}: ${value}`);
     }
 
+    formData.set("id", id);
     formData.set("productName", productName);
     formData.set("brandName", brandName);
     formData.set("category", productCategory);
@@ -87,19 +86,17 @@ export default function EditProduct() {
 
     // Append flavours only if the category is a supplement
     if (isSupplement) {
-
-      formData.set("productDetails.flavours", flavours)
-
+      formData.set("productDetails.flavours", flavours);
     }
 
     // Append shirt sizes only if the category is active-wear
     if (isActiveWear) {
-      formData.set("sizes.shirtSize", shirtSizes)
+      formData.set("sizes.shirtSize", shirtSizes);
     }
 
     // Append weights only if the category is a supplement
     if (isSupplement) {
-      formData.set("sizes.weight", weights)
+      formData.set("sizes.weight", weights);
     }
 
     formData.set("price.productPrice", productPrice);
@@ -142,8 +139,8 @@ export default function EditProduct() {
     }
   }, [id]);
 
-  useEffect(()=>{
-    if(product) {
+  useEffect(() => {
+    if (product) {
       setProductCategory(product.category || "");
       setProductName(product.productName || ""); // Initialize with product data or empty string
       setBrandName(product.brandName || "");
@@ -151,8 +148,10 @@ export default function EditProduct() {
       setProductPrice(product.price?.productPrice || 0);
       setColors(product.productDetails?.colors || []);
       setFlavours(product.productDetails?.flavours || []);
-      setShirtSizes(product.sizes?.shirtSizes || []);
-      setWeights(product.sizes?.weight || []);
+      setShirtSizes(product.sizes?.shirtSize || []);
+      setWeights(
+        product.sizes?.weight.map((weight) => weight.toString()) || []
+      );
       setQuantity(product.stock?.quantity || 0);
       setOnSale(product.price?.onSale || false);
       setInStock(product.stock?.inStock || false);
@@ -223,7 +222,7 @@ export default function EditProduct() {
             >
               Category
             </label>
-            <select 
+            <select
               id="category"
               name="category"
               className="w-full bg-white rounded-lg border-gray-200 p-4 text-sm shadow-sm"
@@ -322,7 +321,7 @@ export default function EditProduct() {
                   <label key={size} className="flex items-center gap-2">
                     <input
                       type="checkbox"
-                      name="sizes.shirtSizes"
+                      name="sizes.shirtSize"
                       value={size}
                       onChange={handleCheckboxChange(shirtSizes, setShirtSizes)}
                       className="rounded border-gray-300"
@@ -341,23 +340,19 @@ export default function EditProduct() {
                 Weight Options (grams)
               </label>
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 mt-2">
-                {[250, 500, 1000, 2000, 4000].map(
-                  (weight) => (
-                    <label key={weight} className="flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        name="sizes.weights"
-                        value={weight}
-                        onChange={handleCheckboxChange(weights, setWeights)}
-                        className="rounded border-gray-300"
-                        checked={weights.includes(weight)}
-                      />
-                      <span className="text-sm">
-                        {weight}g
-                      </span>
-                    </label>
-                  )
-                )}
+                {["250", "500", "1000", "2000", "4000"].map((weight) => (
+                  <label key={weight} className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      name="sizes.weights"
+                      value={weight}
+                      onChange={handleCheckboxChange(weights, setWeights)}
+                      className="rounded border-gray-300"
+                      checked={weights.includes(weight)}
+                    />
+                    <span className="text-sm">{weight}g</span>
+                  </label>
+                ))}
               </div>
             </div>
           )}
@@ -372,7 +367,6 @@ export default function EditProduct() {
             <input
               type="file"
               accept=".png, .jpg, .jpeg, .webp"
-            
               id="images"
               name="images"
               className="w-full rounded-lg bg-[white] border-gray-200 p-4 text-sm shadow-sm"
