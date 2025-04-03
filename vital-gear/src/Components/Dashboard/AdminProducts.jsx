@@ -1,18 +1,28 @@
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Search, Edit, Trash, Filter, ArrowUpDown } from 'lucide-react';
+import allProducts from '../../../controllers/Admin/allProducts';
 
 export default function ProductDashboard() {
   // Minimal sample data (you'll replace this with MongoDB data)
-  const [products, setProducts] = useState([
-    { id: 1, name: 'Premium Headphones', brand: 'AudioTech', category: 'Protein', sales: 342, rating: 4.7, revenue: 17100 },
-    { id: 2, name: 'Ergonomic Chair', brand: 'ComfortPlus', category: 'Gainer', sales: 128, rating: 4.5, revenue: 15360 },
-  ]);
+  // const [products, setProducts] = useState([
+  //   { id: 1, name: 'Premium Headphones', brand: 'AudioTech', category: 'Protein', sales: 342, rating: 4.7, revenue: 17100 },
+  //   { id: 2, name: 'Ergonomic Chair', brand: 'ComfortPlus', category: 'Gainer', sales: 128, rating: 4.5, revenue: 15360 },
+  // ]);
+
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
 
   // Basic categories
   const categories = [
     { id: 'all', name: 'All Products' },
     { id: 'Protein', name: 'Protein' },
     { id: 'Gainer', name: 'Gainer' },
+    {id: 'pre-workout', name:'Pre Workout'},
+    {id: 'post-workout', name:'Post Workout'},
+    {id: 'vitamin', name:'Vitamin'},
+    {id: 'active-wear', name:'Active Wear'}
   ];
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -54,12 +64,20 @@ export default function ProductDashboard() {
   };
 
   // This is just for demo - you'll get these values from your API
-  const totalRevenue = 32460;
-  const categoryRevenues = {
-    'all': 32460,
-    'Protein': 17100,
-    'Gainer': 15360
-  };
+  // const totalRevenue = 32460;
+  // const categoryRevenues = {
+  //   'all': 32460,
+  //   'Protein': 17100,
+  //   'Gainer': 15360
+  // };
+
+
+  useEffect(()=>{
+    allProducts(setProducts, setLoading, setError);
+  }, [])
+
+  if (loading) return <h1>Loading...</h1>;
+  if (error) return <h1>{error}</h1>;
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -94,9 +112,9 @@ export default function ProductDashboard() {
                 }`}
               >
                 {category.name}
-                <span className="ml-2 text-xs font-medium">
+                {/* <span className="ml-2 text-xs font-medium">
                   ${(categoryRevenues[category.id] / 1000).toFixed(1)}K
-                </span>
+                </span> */}
               </button>
             ))}
           </div>
@@ -107,9 +125,9 @@ export default function ProductDashboard() {
               <p className="text-sm text-gray-500">
                 Showing {products.length} products
               </p>
-              <p className="text-sm font-medium">
+              {/* <p className="text-sm font-medium">
                 Total Revenue: <span className="text-[#09274d] font-bold">${totalRevenue.toLocaleString()}</span>
-              </p>
+              </p> */}
             </div>
             
             <table className="w-full text-sm text-left border-collapse">
@@ -133,45 +151,53 @@ export default function ProductDashboard() {
                       <ArrowUpDown size={14} className="ml-1" />
                     </div>
                   </th>
-                  <th onClick={() => requestSort('sales')} className="px-6 py-3 cursor-pointer">
+                  {/* <th onClick={() => requestSort('sales')} className="px-6 py-3 cursor-pointer">
                     <div className="flex items-center">
                       Sales
                       <ArrowUpDown size={14} className="ml-1" />
                     </div>
-                  </th>
+                  </th> */}
                   <th onClick={() => requestSort('rating')} className="px-6 py-3 cursor-pointer">
                     <div className="flex items-center">
                       Rating
                       <ArrowUpDown size={14} className="ml-1" />
                     </div>
                   </th>
-                  <th onClick={() => requestSort('revenue')} className="px-6 py-3 cursor-pointer">
+                  <th onClick={() => requestSort('stock')} className="px-6 py-3 cursor-pointer">
+                    <div className="flex items-center">
+                      Stock
+                      <ArrowUpDown size={14} className="ml-1" />
+                    </div>
+                  </th>
+                  {/* <th onClick={() => requestSort('revenue')} className="px-6 py-3 cursor-pointer">
                     <div className="flex items-center">
                       Revenue
                       <ArrowUpDown size={14} className="ml-1" />
                     </div>
-                  </th>
+                  </th> */}
                   <th className="px-6 py-3">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {products.map((product) => (
                   <tr key={product.id} className="bg-white border-b hover:bg-gray-50">
-                    <td className="px-6 py-4 font-medium text-gray-900">{product.name}</td>
-                    <td className="px-6 py-4">{product.brand}</td>
+                    <td className="px-6 py-4 font-medium text-gray-900">{product.productName}</td>
+                    <td className="px-6 py-4">{product.brandName}</td>
                     <td className="px-6 py-4">
                       <span className="px-2 py-1 bg-[#dae0ef] text-[#09274d] rounded-full text-xs">
                         {product.category}
                       </span>
                     </td>
-                    <td className="px-6 py-4">{product.sales}</td>
+                    {/* <td className="px-6 py-4">{product.sales}</td> */}
+                    
                     <td className="px-6 py-4">
                       <div className="flex items-center">
                         <span className="text-yellow-500">★</span>
                         <span className="ml-1">{product.rating.toFixed(1)}</span>
                       </div>
                     </td>
-                    <td className="px-6 py-4 font-medium">${product.revenue.toLocaleString()}</td>
+                    <td className="px-6 py-4">{product.stock?.quantity}</td>
+                    {/* <td className="px-6 py-4 font-medium">${product.revenue.toLocaleString()}</td> */}
                     <td className="px-6 py-4">
                       <div className="flex space-x-2">
                         <button 
