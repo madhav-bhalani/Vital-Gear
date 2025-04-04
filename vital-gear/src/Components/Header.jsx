@@ -5,8 +5,9 @@ import { FaShoppingCart } from "react-icons/fa";
 import { Menu, X } from "lucide-react";
 import "../App.css";
 import { useModal } from "../ModalContext";
-
+import { useNavigate } from "react-router-dom";
 function Header() {
+  const navigate = useNavigate();
   const {
     handleLoginClick,
     handleSignUpClick,
@@ -44,6 +45,10 @@ function Header() {
       console.error("Error during logout:", error);
     }
   };
+
+  const viewProfile = () => {
+    navigate("/User")
+  }
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -120,11 +125,15 @@ function Header() {
                   <>
                     <div className="flex items-center gap-3 rounded-md bg-[#112D4E] text-[#DBE2EF] p-2">
                       <button onClick={handleLogout} className="text-sm md:text-base">Sign Out</button>
-                      <div className="bg-[#DBE2EF] text-[#112D4E] p-2 rounded-full uppercase">
+                      
+                      <button className="bg-[#DBE2EF] text-[#112D4E] p-2 rounded-full uppercase" onClick={viewProfile}>
+                
                         {firstName.charAt(0)}
                         {lastName.charAt(0)}
-                      </div>
+               
+                    </button>
                     </div>
+                  
                   </>
                 ) : (
                   <>
@@ -254,7 +263,7 @@ function Header() {
                       <span>
                         Welcome, {firstName} {lastName}
                       </span>
-                      <div className="bg-[#112D4E] text-[#DBE2EF] p-2 rounded-full uppercase">
+                      <div className="bg-[#112D4E] text-[#DBE2EF] p-2 rounded-full uppercase" onClick={viewProfile}>
                         {firstName.charAt(0)}
                         {lastName.charAt(0)}
                       </div>

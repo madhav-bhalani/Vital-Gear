@@ -110,15 +110,16 @@ export default function EditProduct() {
     // console.log(formData);
 
     try {
+      console.log(formData);
       const response = await axios.put(
         `http://localhost:3000/products/${id}`,
         formData,
-        {
-          //form enc type
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
+        // {
+        //   //form enc type
+        //   headers: {
+        //     "Content-Type": "multipart/form-data",
+        //   },
+        // }
       );
 
       console.log("Product data: ", response.data);
@@ -166,7 +167,7 @@ export default function EditProduct() {
         <form
           onSubmit={handleFormSubmit}
           className="bg-[#dae0ef] mb-0 mt-6 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8 max-w-3xl mx-auto"
-          encType="multipart/form-data"
+          // encType="multipart/form-data"
         >
           <h1 className="text-center text-2xl font-bold text-[#09274d] sm:text-3xl">
             Edit Product

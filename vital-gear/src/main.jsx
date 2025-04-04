@@ -23,6 +23,7 @@ import AdminLayout from "./Components/Dashboard/Admin";
 import Dashboard from "./Components/Dashboard/Dashboard";
 import ProductDashboard from "./Components/Dashboard/AdminProducts";
 import EditProduct from "./Components/Dashboard/EditProduct";
+import UserProfile from "./Components/User Dashboard/UserProfile";
 
 const router = createBrowserRouter([
   {
@@ -74,6 +75,10 @@ const router = createBrowserRouter([
     path: "/Contact",
     element: <Contact />,
   },
+  {
+    path: "/User",
+    element: <UserProfile />
+  }
   // {
   //   path: "/Dashboard",
   //   element: <AddProduct />,
