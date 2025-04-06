@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { Search, Edit, Trash, Filter, ArrowUpDown } from 'lucide-react';
-import allProducts from '../../../controllers/Admin/allProducts';
-import { NavLink } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { Search, Edit, Trash, Filter, ArrowUpDown } from "lucide-react";
+import allProducts from "../../../controllers/Admin/allProducts";
+import { NavLink } from "react-router-dom";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function ProductDashboard() {
+  const navigate = useNavigate();
   // Minimal sample data (you'll replace this with MongoDB data)
   // const [products, setProducts] = useState([
   //   { id: 1, name: 'Premium Headphones', brand: 'AudioTech', category: 'Protein', sales: 342, rating: 4.7, revenue: 17100 },
@@ -14,21 +17,23 @@ export default function ProductDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-
   // Basic categories
   const categories = [
-    { id: 'all', name: 'All Products' },
-    { id: 'Protein', name: 'Protein' },
-    { id: 'Gainer', name: 'Gainer' },
-    {id: 'pre-workout', name:'Pre Workout'},
-    {id: 'post-workout', name:'Post Workout'},
-    {id: 'vitamin', name:'Vitamin'},
-    {id: 'active-wear', name:'Active Wear'}
+    { id: "all", name: "All Products" },
+    { id: "Protein", name: "Protein" },
+    { id: "Gainer", name: "Gainer" },
+    { id: "pre-workout", name: "Pre Workout" },
+    { id: "post-workout", name: "Post Workout" },
+    { id: "vitamin", name: "Vitamin" },
+    { id: "active-wear", name: "Active Wear" },
   ];
 
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [sortConfig, setSortConfig] = useState({ key: null, direction: 'ascending' });
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [sortConfig, setSortConfig] = useState({
+    key: null,
+    direction: "ascending",
+  });
 
   // Handle search input
   const handleSearch = (e) => {
@@ -44,24 +49,31 @@ export default function ProductDashboard() {
 
   // Handle sorting
   const requestSort = (key) => {
-    let direction = 'ascending';
-    if (sortConfig.key === key && sortConfig.direction === 'ascending') {
-      direction = 'descending';
+    let direction = "ascending";
+    if (sortConfig.key === key && sortConfig.direction === "ascending") {
+      direction = "descending";
     }
     setSortConfig({ key, direction });
     // In real implementation: Call your API to fetch sorted data
   };
 
   // Handle product deletion
-  const handleDelete = (id) => {
-    // In real implementation: Call your API to delete product
-    console.log(`Delete product with ID: ${id}`);
-  };
+  const handleDelete = async (id) => {
+    try {
+      console.log(id);
+      const response = await axios.delete(
+        `http://localhost:3000/products/${id}`
+      );
+      alert(response.data.message);
+      //refresh the product list after deletion
+      allProducts(setProducts, setLoading, setError);
+      // Optionally, you can also remove the deleted product from the state
 
-  // Handle product edit
-  const handleEdit = (id) => {
-    // In real implementation: Navigate to edit form or open modal
-    console.log(`Edit product with ID: ${id}`);
+      navigate("/admin/products");
+    } catch (err) {
+      alert(err.response.data.error);
+      console.log(err.response.data.error);
+    }
   };
 
   // This is just for demo - you'll get these values from your API
@@ -72,22 +84,20 @@ export default function ProductDashboard() {
   //   'Gainer': 15360
   // };
 
-
-  useEffect(()=>{
+  useEffect(() => {
     allProducts(setProducts, setLoading, setError);
-  }, [])
+  }, []);
 
   if (loading) return <h1>Loading...</h1>;
   if (error) return <h1>{error}</h1>;
 
   return (
     <div className="min-h-screen bg-gray-100">
-
       {/* Main Content */}
       <div className="p-6">
         <div className="bg-white rounded-lg shadow p-6">
           <h2 className="text-xl font-semibold mb-6">Products Management</h2>
-          
+
           {/* Search Bar */}
           <div className="relative mb-6">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -101,7 +111,7 @@ export default function ProductDashboard() {
               onChange={handleSearch}
             />
           </div>
-          
+
           {/* Category Navigation */}
           <div className="flex overflow-x-auto bg-[#dae0ef] rounded-lg p-1 mb-6">
             {categories.map((category) => (
@@ -109,7 +119,9 @@ export default function ProductDashboard() {
                 key={category.id}
                 onClick={() => handleCategorySelect(category.id)}
                 className={`px-4 py-2 rounded-md whitespace-nowrap mx-1 ${
-                  selectedCategory === category.id ? 'bg-[#395c87] text-white' : 'text-[#09274d]'
+                  selectedCategory === category.id
+                    ? "bg-[#395c87] text-white"
+                    : "text-[#09274d]"
                 }`}
               >
                 {category.name}
@@ -119,7 +131,7 @@ export default function ProductDashboard() {
               </button>
             ))}
           </div>
-          
+
           {/* Products List */}
           <div className="overflow-x-auto">
             <div className="mb-4 flex justify-between items-center">
@@ -130,23 +142,32 @@ export default function ProductDashboard() {
                 Total Revenue: <span className="text-[#09274d] font-bold">${totalRevenue.toLocaleString()}</span>
               </p> */}
             </div>
-            
+
             <table className="w-full text-sm text-left border-collapse">
               <thead className="text-xs uppercase bg-[#dae0ef] text-[#09274d]">
                 <tr>
-                  <th onClick={() => requestSort('name')} className="px-6 py-3 cursor-pointer">
+                  <th
+                    onClick={() => requestSort("name")}
+                    className="px-6 py-3 cursor-pointer"
+                  >
                     <div className="flex items-center">
                       Product Name
                       <ArrowUpDown size={14} className="ml-1" />
                     </div>
                   </th>
-                  <th onClick={() => requestSort('brand')} className="px-6 py-3 cursor-pointer">
+                  <th
+                    onClick={() => requestSort("brand")}
+                    className="px-6 py-3 cursor-pointer"
+                  >
                     <div className="flex items-center">
                       Brand
                       <ArrowUpDown size={14} className="ml-1" />
                     </div>
                   </th>
-                  <th onClick={() => requestSort('category')} className="px-6 py-3 cursor-pointer">
+                  <th
+                    onClick={() => requestSort("category")}
+                    className="px-6 py-3 cursor-pointer"
+                  >
                     <div className="flex items-center">
                       Category
                       <ArrowUpDown size={14} className="ml-1" />
@@ -158,13 +179,19 @@ export default function ProductDashboard() {
                       <ArrowUpDown size={14} className="ml-1" />
                     </div>
                   </th> */}
-                  <th onClick={() => requestSort('rating')} className="px-6 py-3 cursor-pointer">
+                  <th
+                    onClick={() => requestSort("rating")}
+                    className="px-6 py-3 cursor-pointer"
+                  >
                     <div className="flex items-center">
                       Rating
                       <ArrowUpDown size={14} className="ml-1" />
                     </div>
                   </th>
-                  <th onClick={() => requestSort('stock')} className="px-6 py-3 cursor-pointer">
+                  <th
+                    onClick={() => requestSort("stock")}
+                    className="px-6 py-3 cursor-pointer"
+                  >
                     <div className="flex items-center">
                       Stock
                       <ArrowUpDown size={14} className="ml-1" />
@@ -181,8 +208,13 @@ export default function ProductDashboard() {
               </thead>
               <tbody>
                 {products.map((product) => (
-                  <tr key={product._id} className="bg-white border-b hover:bg-gray-50">
-                    <td className="px-6 py-4 font-medium text-gray-900">{product.productName}</td>
+                  <tr
+                    key={product._id}
+                    className="bg-white border-b hover:bg-gray-50"
+                  >
+                    <td className="px-6 py-4 font-medium text-gray-900">
+                      {product.productName}
+                    </td>
                     <td className="px-6 py-4">{product.brandName}</td>
                     <td className="px-6 py-4">
                       <span className="px-2 py-1 bg-[#dae0ef] text-[#09274d] rounded-full text-xs">
@@ -190,11 +222,13 @@ export default function ProductDashboard() {
                       </span>
                     </td>
                     {/* <td className="px-6 py-4">{product.sales}</td> */}
-                    
+
                     <td className="px-6 py-4">
                       <div className="flex items-center">
                         <span className="text-yellow-500">★</span>
-                        <span className="ml-1">{product.rating.toFixed(1)}</span>
+                        <span className="ml-1">
+                          {product.rating.toFixed(1)}
+                        </span>
                       </div>
                     </td>
                     <td className="px-6 py-4">{product.stock?.quantity}</td>
@@ -202,16 +236,16 @@ export default function ProductDashboard() {
                     <td className="px-6 py-4">
                       <div className="flex space-x-2">
                         {/* edit button */}
-                        <NavLink to={`/admin/products/edit/${product._id}`} >
-                          <button 
-                          // onClick={() => handleEdit(product.id)} 
+                        <NavLink to={`/admin/products/edit/${product._id}`}>
+                          <button
+                            // onClick={() => handleEdit(product.id)}
                             className="p-1 text-blue-600 hover:bg-blue-100 rounded-md"
                           >
                             <Edit size={16} />
                           </button>
                         </NavLink>
-                        <button 
-                          onClick={() => handleDelete(product.id)} 
+                        <button
+                          onClick={() => handleDelete(product._id)}
                           className="p-1 text-red-600 hover:bg-red-100 rounded-md"
                         >
                           <Trash size={16} />
@@ -222,7 +256,10 @@ export default function ProductDashboard() {
                 ))}
                 {products.length === 0 && (
                   <tr className="bg-white border-b">
-                    <td colSpan="7" className="px-6 py-4 text-center text-gray-500">
+                    <td
+                      colSpan="7"
+                      className="px-6 py-4 text-center text-gray-500"
+                    >
                       No products found
                     </td>
                   </tr>
