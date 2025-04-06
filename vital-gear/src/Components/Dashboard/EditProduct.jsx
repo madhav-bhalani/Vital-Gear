@@ -64,16 +64,11 @@ export default function EditProduct() {
   const handleFormSubmit = async (e) => {
     e.preventDefault();
 
-    const formData = new FormData();
+    const formData = new URLSearchParams();
     // files.forEach((file) => {
     //   formData.set("images", file);
     // });
 
-    for (let [key, value] of formData.entries()) {
-      console.log(`These here: ${key}: ${value}`);
-    }
-
-    formData.set("id", id);
     formData.set("productName", productName);
     formData.set("brandName", brandName);
     formData.set("category", productCategory);
@@ -81,45 +76,50 @@ export default function EditProduct() {
 
     // Append colors only if the category is active-wear
     if (isActiveWear) {
-      formData.set("productDetails.colors", colors);
+      colors.forEach((color) => {
+        formData.append("productDetails.colors", color);
+      });
+      shirtSizes.forEach((size) => {
+        formData.append("sizes.shirtSize", size);
+      });
     }
 
     // Append flavours only if the category is a supplement
     if (isSupplement) {
-      formData.set("productDetails.flavours", flavours);
+      flavours.forEach((flavour) => {
+        formData.append("productDetails.flavours", flavour);
+      });
+      weights.forEach((weight) => {
+        formData.append("sizes.weight", weight);
+      });
     }
 
     // Append shirt sizes only if the category is active-wear
-    if (isActiveWear) {
-      formData.set("sizes.shirtSize", shirtSizes);
-    }
+    // if (isActiveWear) {
+
+    // }
 
     // Append weights only if the category is a supplement
-    if (isSupplement) {
-      formData.set("sizes.weight", weights);
-    }
+    // if (isSupplement) {
+
+    // }
 
     formData.set("price.productPrice", productPrice);
-    // formData.set("stock.quantity", quantity);
-    formData.set("price.onSale", onSale);
-    // formData.set("stock.inStock", inStock);
 
     // for (let pair of formData.()) {
     //   console.log(pair[0], pair[1]);
     // }
     // console.log(formData);
 
+    for (let [key, value] of formData.entries()) {
+      console.log(`These here: ${key}: ${value}`);
+    }
+
     try {
-      console.log(formData);
+      console.log("HG Form: ", Array.from(formData.entries()));
       const response = await axios.put(
         `http://localhost:3000/products/${id}`,
-        formData,
-        // {
-        //   //form enc type
-        //   headers: {
-        //     "Content-Type": "multipart/form-data",
-        //   },
-        // }
+        formData
       );
 
       console.log("Product data: ", response.data);
