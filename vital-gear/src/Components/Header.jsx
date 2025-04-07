@@ -6,6 +6,7 @@ import { Menu, X } from "lucide-react";
 import "../App.css";
 import { useModal } from "../ModalContext";
 import { useNavigate } from "react-router-dom";
+import { data } from "autoprefixer";
 function Header() {
   const navigate = useNavigate();
   const {
@@ -16,9 +17,13 @@ function Header() {
     fname,
     lname,
     removeSignIn,
+    isAdmin,
+    setAdmin
   } = useModal();
   
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  console.log("HG Admin after", isAdmin);
 
   let firstName = fname;
   let lastName = lname;
@@ -35,6 +40,7 @@ function Header() {
 
       if (response.status === 200) {
         console.log("Logout successful");
+        setAdmin(false);
         alert(response.data.message); // Show success message
         removeSignIn(); // Update UI state after successful logout
       } else {
@@ -106,9 +112,16 @@ function Header() {
                 Contact
               </NavLink>
               
-              <NavLink to="/admin" className="hover:text-[#3F72AF]">
-                Dashboard
-              </NavLink>
+              {isAdmin ? (
+                <>
+                  <NavLink to="/admin" className="hover:text-[#3F72AF]">
+                    Dashboard
+                  </NavLink>
+                </>
+              ) : (
+                <></>
+              )}
+              
             </nav>
 
             {/* Logo - centered on mobile, in position on desktop */}
@@ -247,13 +260,18 @@ function Header() {
                 Contact
               </NavLink>
               
-              <NavLink
-                to="/admin"
-                className="block px-3 py-2 hover:text-[#3F72AF]"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Dashboard
-              </NavLink>
+              {
+                isAdmin ? (
+                  <>
+                    <NavLink to="/admin" className="block px-3 py-2 hover:text-[#3F72AF]" onClick={() => setMobileMenuOpen(false)}>
+                      Dashboard
+                    </NavLink>
+                  </>
+                ) : (
+                  <></>
+                )
+              }
+              
               
               {/* Mobile Auth Options */}
               <div className="sm:hidden pt-4 border-t border-gray-300">

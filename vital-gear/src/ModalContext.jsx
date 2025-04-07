@@ -48,6 +48,9 @@ export const ModalProvider = ({ children }) => {
   const [bread, setBread] = useState(false);
   const toggleBread = () => setBread(!bread);
 
+  //adminAccess
+  const [isAdmin, setAdmin] = useState(false);
+
   return (
     <ModalContext.Provider
       value={{
@@ -76,6 +79,8 @@ export const ModalProvider = ({ children }) => {
         togglePass,
         bread,
         toggleBread,
+        isAdmin, 
+        setAdmin
       }}
     >
       {children}

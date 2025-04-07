@@ -12,7 +12,9 @@ export default function SignIn() {
     setFname,
     setLname,
     pass,
-    togglePass
+    togglePass,
+    setAdmin,
+    isAdmin
   } = useModal();
 
   const [username, setUsername] = useState("");
@@ -39,6 +41,10 @@ export default function SignIn() {
       setFname(response.data.user.firstName);
       setLname(response.data.user.lastName);
       // console.log("user: " + fname + " " + lname);
+      console.log("HG Admin before ",isAdmin)
+      if(response.data.user.isAdmin === true){
+        setAdmin(true);
+      }
       addSignIn();
       handleCloseModal();
       alert(response.data.message); // Show success message
