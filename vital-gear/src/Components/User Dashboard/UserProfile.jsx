@@ -99,10 +99,32 @@ function ProfileInfo() {
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [newPass, setNewPass] = useState("");
-  const [newPassConf, setNewPassConf] = useState("");
+  const [password, setPassword] = useState("");
 
-  const handleSubmit = () => {
+  const handleEditUser = async (e) => {
     //handleEditForm
+    e.preventDefault();
+
+    const formData = new URLSearchParams();
+
+    formData.set("firstName", firstName);
+    formData.set("lastName", lastName);
+    formData.set("email",email);
+    formData.set("phone", phone);
+    formData.set("newPass", newPass);
+    formData.set("password", password);
+
+
+    try{
+      console.log("HG Form: ", Array.from(formData.entries()));
+      const response = await axios.put(`http://localhost:3000/user/${userId}`, formData, {withCredentials: true})
+      alert(response.data.message);
+      navigate('/User');
+    } catch(err){
+      alert(err.response.data.error);
+      console.log(err.response.data.error);
+    }
+
   };
 
   useEffect(() => {
@@ -117,9 +139,12 @@ function ProfileInfo() {
       setLastName(user.lastName || "");
       setEmail(user.email || "");
       setPhone(user.phone || "");
+      // setNewPass(user.password);
+      // setPassword(user.password);
     }
   }, [user]);
-
+  if (loading) return <h1>Loading...</h1>;
+  if (error) return <h1>{error}</h1>;
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
@@ -136,7 +161,7 @@ function ProfileInfo() {
         )}
       </div>
 
-      <form>
+      <form onSubmit={handleEditUser}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label
@@ -250,9 +275,9 @@ function ProfileInfo() {
                 <input
                   type="password"
                   id="confirmPassword"
-                  name="confirmPassword"
-                  value={newPassConf}
-                  onChange={(e) => setNewPassConf(e.target.value)}
+                  name="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="w-full bg-[white]  rounded-lg border-gray-200 p-3 text-sm shadow-sm"
                   placeholder="Leave blank to keep current password"
                 />
