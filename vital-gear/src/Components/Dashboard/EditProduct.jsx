@@ -119,7 +119,7 @@ export default function EditProduct() {
       console.log("HG Form: ", Array.from(formData.entries()));
       const response = await axios.put(
         `http://localhost:3000/products/${id}`,
-        formData
+        formData, {withCredentials: true}
       );
 
       console.log("Product data: ", response.data);

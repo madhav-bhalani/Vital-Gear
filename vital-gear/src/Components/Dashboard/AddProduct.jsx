@@ -107,6 +107,7 @@ export default function AddProduct() {
         formData,
         {
           //form enc type
+          withCredentials: true,
           headers: {
             "Content-Type": "multipart/form-data",
           },
