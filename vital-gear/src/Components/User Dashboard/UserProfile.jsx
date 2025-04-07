@@ -3,10 +3,13 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Header from "../Header";
 import Basics from "../Basics";
+import { useModal } from "../../ModalContext";
+import fetchUser from "../../../controllers/User/fetchUser";
 
 export default function UserProfile() {
   
-    const [activeTab, setActiveTab] = useState("profile");
+  
+  const [activeTab, setActiveTab] = useState("profile");
   const navigate = useNavigate();
   
   // Handle signout
@@ -72,71 +75,80 @@ export default function UserProfile() {
 
 // Profile Information Component
 function ProfileInfo() {
+  const {userId, setUserId} = useModal();
   const [editMode, setEditMode] = useState(false);
-  const [userData, setUserData] = useState({
-    firstName: "John",
-    lastName: "Doe",
-    email: "john.doe@example.com",
-    phone: "9876543210",
-    password: "",
-    confirmPassword: ""
-  });
+  // const [userData, setUserData] = useState({
+  //   firstName: "John",
+  //   lastName: "Doe",
+  //   email: "john.doe@example.com",
+  //   phone: "9876543210",
+  //   password: "",
+  //   confirmPassword: ""
+  // });
   
+  const [user, setUser] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [successMessage, setSuccessMessage] = useState("");
+  const [error, setError] = useState("");
+
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [newPass, setNewPass] = useState("");
+  const [newPassConf, setNewPassConf] = useState("");
   
-  useEffect(() => {
-    // Fetch user data
-    const fetchUserData = async () => {
-      try {
-        // const response = await axios.get("http://localhost:3000/user/profile");
-        // setUserData(response.data);
-        // Using sample data for now
-      } catch (err) {
-        console.error("Error fetching user data:", err);
-      }
-    };
-    
-    fetchUserData();
-  }, []);
+  // const handleChange = (e) => {
+  //   setUserData({
+  //     ...userData,
+  //     [e.target.name]: e.target.value
+  //   });
+  // };
   
-  const handleChange = (e) => {
-    setUserData({
-      ...userData,
-      [e.target.name]: e.target.value
-    });
-  };
-  
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   setLoading(true);
     
-    // Validation for password match
-    if (userData.password && userData.password !== userData.confirmPassword) {
-      alert("Passwords do not match!");
-      setLoading(false);
-      return;
-    }
+  //   // Validation for password match
+  //   if (userData.password && userData.password !== userData.confirmPassword) {
+  //     alert("Passwords do not match!");
+  //     setLoading(false);
+  //     return;
+  //   }
     
-    try {
-      // const response = await axios.put("http://localhost:3000/user/profile", userData);
-      // Simulating API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+  //   try {
+  //     // const response = await axios.put("http://localhost:3000/user/profile", userData);
+  //     // Simulating API call
+  //     await new Promise(resolve => setTimeout(resolve, 1000));
       
-      setSuccessMessage("Profile updated successfully!");
-      setEditMode(false);
+  //     setSuccessMessage("Profile updated successfully!");
+  //     setEditMode(false);
       
-      // Clear success message after 3 seconds
-      setTimeout(() => {
-        setSuccessMessage("");
-      }, 3000);
-    } catch (err) {
-      console.error("Error updating profile:", err);
-      alert("Failed to update profile. Please try again.");
-    } finally {
-      setLoading(false);
+  //     // Clear success message after 3 seconds
+  //     setTimeout(() => {
+  //       setSuccessMessage("");
+  //     }, 3000);
+  //   } catch (err) {
+  //     console.error("Error updating profile:", err);
+  //     alert("Failed to update profile. Please try again.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  useEffect(()=>{
+    if(userId){
+      fetchUser(userId, setLoading, setUser, setError);
     }
-  };
+  }, [userId]);
+
+  useEffect(()=>{
+    if(user) {
+      setFirstName(user.firstName || "");
+      setLastName(user.lastName || "");
+      setEmail(user.email || "");
+      setPhone(user.phone || "");
+    }
+  }, [user]);
   
   return (
     <div>
@@ -152,13 +164,8 @@ function ProfileInfo() {
         )}
       </div>
       
-      {successMessage && (
-        <div className="mb-4 p-3 bg-green-100 text-green-700 rounded-lg">
-          {successMessage}
-        </div>
-      )}
       
-      <form onSubmit={handleSubmit}>
+      <form>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
@@ -168,8 +175,8 @@ function ProfileInfo() {
               type="text"
               id="firstName"
               name="firstName"
-              value={userData.firstName}
-              onChange={handleChange}
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
               disabled={!editMode}
               className="w-full bg-[white] rounded-lg border-gray-200 p-3 text-sm shadow-sm"
               required
@@ -184,8 +191,8 @@ function ProfileInfo() {
               type="text"
               id="lastName"
               name="lastName"
-              value={userData.lastName}
-              onChange={handleChange}
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
               disabled={!editMode}
               className="w-full bg-[white]  rounded-lg border-gray-200 p-3 text-sm shadow-sm"
               required
@@ -200,8 +207,10 @@ function ProfileInfo() {
               type="email"
               id="email"
               name="email"
-              value={userData.email}
-              onChange={handleChange}
+              value={email}
+              pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+              title="Please enter a valid email address"
+              onChange={(e) => setEmail(e.target.value)}
               disabled={!editMode}
               className="w-full bg-[white]  rounded-lg border-gray-200 p-3 text-sm shadow-sm"
               required
@@ -213,12 +222,16 @@ function ProfileInfo() {
               Phone Number
             </label>
             <input
-              type="tel"
+              type="text"
               id="phone"
               name="phone"
-              value={userData.phone}
-              onChange={handleChange}
+              value={phone}
+              pattern="[0-9]{10}"
+              title="Please enter a valid 10-digit phone number"
+              onChange={(e) => setPhone(e.target.value)}
               disabled={!editMode}
+              minLength={10}
+              maxLength={10}
               className="w-full bg-[white] rounded-lg border-gray-200 p-3 text-sm shadow-sm"
               required
             />
@@ -234,8 +247,8 @@ function ProfileInfo() {
                   type="password"
                   id="password"
                   name="password"
-                  value={userData.password}
-                  onChange={handleChange}
+                  value={newPass}
+                  onChange={(e) => setNewPass(e.target.value)}
                   className="w-full bg-[white] rounded-lg border-gray-200 p-3 text-sm shadow-sm"
                   placeholder="Leave blank to keep current password"
                 />
@@ -249,8 +262,8 @@ function ProfileInfo() {
                   type="password"
                   id="confirmPassword"
                   name="confirmPassword"
-                  value={userData.confirmPassword}
-                  onChange={handleChange}
+                  value={newPassConf}
+                  onChange={(e) => setNewPassConf(e.target.value)}
                   className="w-full bg-[white]  rounded-lg border-gray-200 p-3 text-sm shadow-sm"
                   placeholder="Leave blank to keep current password"
                 />

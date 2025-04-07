@@ -51,6 +51,9 @@ export const ModalProvider = ({ children }) => {
   //adminAccess
   const [isAdmin, setAdmin] = useState(false);
 
+  //userProfile Id
+  const [userId, setUserId] = useState("");
+
   return (
     <ModalContext.Provider
       value={{
@@ -80,7 +83,9 @@ export const ModalProvider = ({ children }) => {
         bread,
         toggleBread,
         isAdmin, 
-        setAdmin
+        setAdmin,
+        userId,
+        setUserId
       }}
     >
       {children}

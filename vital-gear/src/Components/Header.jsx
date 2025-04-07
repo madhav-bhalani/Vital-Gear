@@ -16,6 +16,7 @@ function Header() {
     isSignIn,
     fname,
     lname,
+    userId,
     removeSignIn,
     isAdmin,
     setAdmin

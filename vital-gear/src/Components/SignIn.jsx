@@ -14,7 +14,7 @@ export default function SignIn() {
     pass,
     togglePass,
     setAdmin,
-    isAdmin
+    setUserId,
   } = useModal();
 
   const [username, setUsername] = useState("");
@@ -38,10 +38,10 @@ export default function SignIn() {
       ); // Send cookies
 
       // console.log("Login successful:", response.data.user);
+      setUserId(response.data.user._id);
       setFname(response.data.user.firstName);
       setLname(response.data.user.lastName);
       // console.log("user: " + fname + " " + lname);
-      console.log("HG Admin before ",isAdmin)
       if(response.data.user.isAdmin === true){
         setAdmin(true);
       }
