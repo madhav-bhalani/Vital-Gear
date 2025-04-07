@@ -62,7 +62,7 @@ export default function ProductDashboard() {
     try {
       console.log(id);
       const response = await axios.delete(
-        `http://localhost:3000/products/${id}`
+        `http://localhost:3000/products/${id}`, {withCredentials: true}
       );
       alert(response.data.message);
       //refresh the product list after deletion

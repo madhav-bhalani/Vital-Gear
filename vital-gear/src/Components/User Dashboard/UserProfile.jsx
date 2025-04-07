@@ -7,11 +7,9 @@ import { useModal } from "../../ModalContext";
 import fetchUser from "../../../controllers/User/fetchUser";
 
 export default function UserProfile() {
-  
-  
   const [activeTab, setActiveTab] = useState("profile");
   const navigate = useNavigate();
-  
+
   // Handle signout
   const handleSignOut = () => {
     // Clear any stored user data/tokens
@@ -22,70 +20,76 @@ export default function UserProfile() {
 
   return (
     <>
-    <Header />
-    <div className="min-h-screen bg-[white] py-8">
-      <div className="container mx-auto px-4">
-        <h1 className="text-center text-3xl font-bold text-[#09274d] mb-8">My Account</h1>
-        
-        <div className="max-w-6xl mx-auto">
-          <div className="bg-[#dae0ef] rounded-lg shadow-lg overflow-hidden">
-            {/* Tabs */}
-            <div className="flex border-b">
-              <button
-                className={`px-6 py-4 text-sm font-medium ${activeTab === "profile" ? "bg-[#09274d] text-white" : "text-[#09274d]"}`}
-                onClick={() => setActiveTab("profile")}
-              >
-                Personal Info
-              </button>
-              <button
-                className={`px-6 py-4 text-sm font-medium ${activeTab === "addresses" ? "bg-[#09274d] text-white" : "text-[#09274d]"}`}
-                onClick={() => setActiveTab("addresses")}
-              >
-                Addresses
-              </button>
-              <button
-                className={`px-6 py-4 text-sm font-medium ${activeTab === "orders" ? "bg-[#09274d] text-white" : "text-[#09274d]"}`}
-                onClick={() => setActiveTab("orders")}
-              >
-                Orders
-              </button>
+      <Header />
+      <div className="min-h-screen bg-[white] py-8">
+        <div className="container mx-auto px-4">
+          <h1 className="text-center text-3xl font-bold text-[#09274d] mb-8">
+            My Account
+          </h1>
+
+          <div className="max-w-6xl mx-auto">
+            <div className="bg-[#dae0ef] rounded-lg shadow-lg overflow-hidden">
+              {/* Tabs */}
+              <div className="flex border-b">
+                <button
+                  className={`px-6 py-4 text-sm font-medium ${
+                    activeTab === "profile"
+                      ? "bg-[#09274d] text-white"
+                      : "text-[#09274d]"
+                  }`}
+                  onClick={() => setActiveTab("profile")}
+                >
+                  Personal Info
+                </button>
+                <button
+                  className={`px-6 py-4 text-sm font-medium ${
+                    activeTab === "addresses"
+                      ? "bg-[#09274d] text-white"
+                      : "text-[#09274d]"
+                  }`}
+                  onClick={() => setActiveTab("addresses")}
+                >
+                  Addresses
+                </button>
+                <button
+                  className={`px-6 py-4 text-sm font-medium ${
+                    activeTab === "orders"
+                      ? "bg-[#09274d] text-white"
+                      : "text-[#09274d]"
+                  }`}
+                  onClick={() => setActiveTab("orders")}
+                >
+                  Orders
+                </button>
+              </div>
+
+              {/* Content */}
+              <div className="p-6">
+                {activeTab === "profile" && <ProfileInfo />}
+                {activeTab === "addresses" && <AddressManagement />}
+                {activeTab === "orders" && <OrderHistory />}
+              </div>
             </div>
-            
-            {/* Content */}
-            <div className="p-6">
-              {activeTab === "profile" && <ProfileInfo />}
-              {activeTab === "addresses" && <AddressManagement />}
-              {activeTab === "orders" && <OrderHistory />}
-            </div>
+
+            <button
+              onClick={handleSignOut}
+              className="mt-6 px-6 py-3 bg-[#395c87] text-white rounded-lg flex items-center justify-center shadow-md hover:bg-[#09274d] transition duration-300"
+            >
+              Sign Out
+            </button>
           </div>
-          
-          <button
-            onClick={handleSignOut}
-            className="mt-6 px-6 py-3 bg-[#395c87] text-white rounded-lg flex items-center justify-center shadow-md hover:bg-[#09274d] transition duration-300"
-          >
-            Sign Out
-          </button>
         </div>
       </div>
-    </div>
-    <Basics />
+      <Basics />
     </>
   );
 }
 
 // Profile Information Component
 function ProfileInfo() {
-  const {userId, setUserId} = useModal();
+  const { userId, setUserId } = useModal();
   const [editMode, setEditMode] = useState(false);
-  // const [userData, setUserData] = useState({
-  //   firstName: "John",
-  //   lastName: "Doe",
-  //   email: "john.doe@example.com",
-  //   phone: "9876543210",
-  //   password: "",
-  //   confirmPassword: ""
-  // });
-  
+
   const [user, setUser] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -96,64 +100,32 @@ function ProfileInfo() {
   const [phone, setPhone] = useState("");
   const [newPass, setNewPass] = useState("");
   const [newPassConf, setNewPassConf] = useState("");
-  
-  // const handleChange = (e) => {
-  //   setUserData({
-  //     ...userData,
-  //     [e.target.name]: e.target.value
-  //   });
-  // };
-  
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   setLoading(true);
-    
-  //   // Validation for password match
-  //   if (userData.password && userData.password !== userData.confirmPassword) {
-  //     alert("Passwords do not match!");
-  //     setLoading(false);
-  //     return;
-  //   }
-    
-  //   try {
-  //     // const response = await axios.put("http://localhost:3000/user/profile", userData);
-  //     // Simulating API call
-  //     await new Promise(resolve => setTimeout(resolve, 1000));
-      
-  //     setSuccessMessage("Profile updated successfully!");
-  //     setEditMode(false);
-      
-  //     // Clear success message after 3 seconds
-  //     setTimeout(() => {
-  //       setSuccessMessage("");
-  //     }, 3000);
-  //   } catch (err) {
-  //     console.error("Error updating profile:", err);
-  //     alert("Failed to update profile. Please try again.");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
-  useEffect(()=>{
-    if(userId){
+  const handleSubmit = () => {
+    //handleEditForm
+  };
+
+  useEffect(() => {
+    if (userId) {
       fetchUser(userId, setLoading, setUser, setError);
     }
   }, [userId]);
 
-  useEffect(()=>{
-    if(user) {
+  useEffect(() => {
+    if (user) {
       setFirstName(user.firstName || "");
       setLastName(user.lastName || "");
       setEmail(user.email || "");
       setPhone(user.phone || "");
     }
   }, [user]);
-  
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold text-[#09274d]">Personal Information</h2>
+        <h2 className="text-2xl font-semibold text-[#09274d]">
+          Personal Information
+        </h2>
         {!editMode && (
           <button
             onClick={() => setEditMode(true)}
@@ -163,12 +135,14 @@ function ProfileInfo() {
           </button>
         )}
       </div>
-      
-      
+
       <form>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="firstName"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               First Name
             </label>
             <input
@@ -182,9 +156,12 @@ function ProfileInfo() {
               required
             />
           </div>
-          
+
           <div>
-            <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="lastName"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Last Name
             </label>
             <input
@@ -198,9 +175,12 @@ function ProfileInfo() {
               required
             />
           </div>
-          
+
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Email Address
             </label>
             <input
@@ -216,9 +196,12 @@ function ProfileInfo() {
               required
             />
           </div>
-          
+
           <div>
-            <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              htmlFor="phone"
+              className="block text-sm font-medium text-gray-700 mb-1"
+            >
               Phone Number
             </label>
             <input
@@ -236,11 +219,14 @@ function ProfileInfo() {
               required
             />
           </div>
-          
+
           {editMode && (
             <>
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   New Password
                 </label>
                 <input
@@ -253,9 +239,12 @@ function ProfileInfo() {
                   placeholder="Leave blank to keep current password"
                 />
               </div>
-              
+
               <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+                <label
+                  htmlFor="confirmPassword"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
                   Confirm Password
                 </label>
                 <input
@@ -271,7 +260,7 @@ function ProfileInfo() {
             </>
           )}
         </div>
-        
+
         {editMode && (
           <div className="flex justify-end mt-6 space-x-4">
             <button
@@ -306,7 +295,7 @@ function AddressManagement() {
       city: "Mumbai",
       state: "Maharashtra",
       pincode: "400001",
-      isDefault: true
+      isDefault: true,
     },
     {
       id: 2,
@@ -316,13 +305,13 @@ function AddressManagement() {
       city: "Mumbai",
       state: "Maharashtra",
       pincode: "400051",
-      isDefault: false
-    }
+      isDefault: false,
+    },
   ]);
-  
+
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [currentAddress, setCurrentAddress] = useState(null);
-  
+
   useEffect(() => {
     // Fetch user addresses
     const fetchAddresses = async () => {
@@ -334,54 +323,56 @@ function AddressManagement() {
         console.error("Error fetching addresses:", err);
       }
     };
-    
+
     fetchAddresses();
   }, []);
-  
+
   const handleAddAddress = () => {
     setCurrentAddress(null); // Reset current address for new entry
     setShowAddressModal(true);
   };
-  
+
   const handleEditAddress = (address) => {
     setCurrentAddress(address);
     setShowAddressModal(true);
   };
-  
+
   const handleDeleteAddress = async (addressId) => {
     if (window.confirm("Are you sure you want to delete this address?")) {
       try {
         // await axios.delete(`http://localhost:3000/user/addresses/${addressId}`);
         // Remove address from state
-        setAddresses(addresses.filter(addr => addr.id !== addressId));
+        setAddresses(addresses.filter((addr) => addr.id !== addressId));
       } catch (err) {
         console.error("Error deleting address:", err);
         alert("Failed to delete address. Please try again.");
       }
     }
   };
-  
+
   const handleSetDefaultAddress = async (addressId) => {
     try {
       // await axios.put(`http://localhost:3000/user/addresses/${addressId}/default`);
-      
+
       // Update local state
-      const updatedAddresses = addresses.map(addr => ({
+      const updatedAddresses = addresses.map((addr) => ({
         ...addr,
-        isDefault: addr.id === addressId
+        isDefault: addr.id === addressId,
       }));
-      
+
       setAddresses(updatedAddresses);
     } catch (err) {
       console.error("Error setting default address:", err);
       alert("Failed to set default address. Please try again.");
     }
   };
-  
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold text-[#09274d]">Saved Addresses</h2>
+        <h2 className="text-2xl font-semibold text-[#09274d]">
+          Saved Addresses
+        </h2>
         <button
           onClick={handleAddAddress}
           className="px-4 py-2 bg-[#09274d] text-white rounded-lg text-sm"
@@ -389,7 +380,7 @@ function AddressManagement() {
           Add New Address
         </button>
       </div>
-      
+
       {addresses.length === 0 ? (
         <div className="text-center py-8">
           <p className="text-gray-500">No addresses saved yet.</p>
@@ -402,24 +393,32 @@ function AddressManagement() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {addresses.map(address => (
+          {addresses.map((address) => (
             <div
               key={address.id}
-              className={`border rounded-lg p-5 ${address.isDefault ? "border-[#09274d] bg-[white]" : "border-white bg-white"}`}
+              className={`border rounded-lg p-5 ${
+                address.isDefault
+                  ? "border-[#09274d] bg-[white]"
+                  : "border-white bg-white"
+              }`}
             >
               <div className="flex justify-between items-start mb-3">
                 <h3 className="font-medium">{address.name}</h3>
                 {address.isDefault && (
-                  <span className="bg-[#09274d] text-white text-xs px-2 py-1 rounded">Default</span>
+                  <span className="bg-[#09274d] text-white text-xs px-2 py-1 rounded">
+                    Default
+                  </span>
                 )}
               </div>
-              
+
               <div className="text-gray-700 text-sm mb-4">
                 <p>{address.addressLine1}</p>
                 {address.addressLine2 && <p>{address.addressLine2}</p>}
-                <p>{address.city}, {address.state} {address.pincode}</p>
+                <p>
+                  {address.city}, {address.state} {address.pincode}
+                </p>
               </div>
-              
+
               <div className="flex justify-between items-center">
                 <div className="space-x-2">
                   <button
@@ -435,7 +434,7 @@ function AddressManagement() {
                     Delete
                   </button>
                 </div>
-                
+
                 {!address.isDefault && (
                   <button
                     onClick={() => handleSetDefaultAddress(address.id)}
@@ -449,7 +448,7 @@ function AddressManagement() {
           ))}
         </div>
       )}
-      
+
       {showAddressModal && (
         <AddressModal
           address={currentAddress}
@@ -457,12 +456,14 @@ function AddressManagement() {
           onSave={(newAddress) => {
             if (currentAddress) {
               // Update existing address
-              setAddresses(addresses.map(addr => 
-                addr.id === newAddress.id ? newAddress : addr
-              ));
+              setAddresses(
+                addresses.map((addr) =>
+                  addr.id === newAddress.id ? newAddress : addr
+                )
+              );
             } else {
               // Add new address with a generated ID
-              const newId = Math.max(...addresses.map(a => a.id), 0) + 1;
+              const newId = Math.max(...addresses.map((a) => a.id), 0) + 1;
               setAddresses([...addresses, { ...newAddress, id: newId }]);
             }
             setShowAddressModal(false);
@@ -483,33 +484,33 @@ function AddressModal({ address, onClose, onSave }) {
     city: address?.city || "",
     state: address?.state || "",
     pincode: address?.pincode || "",
-    isDefault: address?.isDefault || false
+    isDefault: address?.isDefault || false,
   });
-  
+
   const [loading, setLoading] = useState(false);
-  
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData({
       ...formData,
-      [name]: type === "checkbox" ? checked : value
+      [name]: type === "checkbox" ? checked : value,
     });
   };
-  
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    
+
     try {
       // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       // When editing an existing address:
       if (address) {
         // const response = await axios.put(`http://localhost:3000/user/addresses/${address.id}`, formData);
         // onSave(response.data);
         onSave(formData);
-      } 
+      }
       // When adding a new address:
       else {
         // const response = await axios.post("http://localhost:3000/user/addresses", formData);
@@ -523,15 +524,15 @@ function AddressModal({ address, onClose, onSave }) {
       setLoading(false);
     }
   };
-  
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
-      <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+      <div className="bg-[#dae0ef] rounded-lg p-6 w-full max-w-md mx-4">
         <h3 className="text-xl font-semibold text-[#09274d] mb-4">
           {address ? "Edit Address" : "Add New Address"}
         </h3>
-        
-        <form onSubmit={handleSubmit}>
+
+        {/* <form onSubmit={handleSubmit}>
           <div className="space-y-4">
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
@@ -658,6 +659,196 @@ function AddressModal({ address, onClose, onSave }) {
               {loading ? "Saving..." : "Save Address"}
             </button>
           </div>
+        </form> */}
+        <form onSubmit={handleSubmit}>
+          <div className="space-y-4">
+            <div>
+              <label
+                htmlFor="name"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Address Name
+              </label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                className="w-full rounded-lg border-gray-200 p-4 text-sm shadow-sm"
+                placeholder="Home, Office, etc."
+                required
+              />
+            </div>
+            
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <label
+                htmlFor="houseFlat"
+                className="block text-sm font-medium text-gray-700"
+              >
+                House/Flat Number
+              </label>
+              <input
+                type="text"
+                id="houseFlat"
+                name="houseFlat"
+                value={formData.houseFlat}
+                onChange={handleChange}
+                className="w-full rounded-lg border-gray-200 p-4 text-sm shadow-sm"
+                placeholder="House/Flat Number"
+                required
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="apartmentRoad"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Apartment/Road
+              </label>
+              <input
+                type="text"
+                id="apartmentRoad"
+                name="apartmentRoad"
+                value={formData.apartmentRoad}
+                onChange={handleChange}
+                className="w-full rounded-lg border-gray-200 p-4 text-sm shadow-sm"
+                placeholder="Apartment name or Road"
+                required
+              />
+            </div>
+            </div>
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <label
+                htmlFor="landmark"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Landmark (Optional)
+              </label>
+              <input
+                type="text"
+                id="landmark"
+                name="landmark"
+                value={formData.landmark}
+                onChange={handleChange}
+                className="w-full rounded-lg border-gray-200 p-4 text-sm shadow-sm"
+                placeholder="Nearby landmark"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="area"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Area
+              </label>
+              <input
+                type="text"
+                id="area"
+                name="area"
+                value={formData.area}
+                onChange={handleChange}
+                className="w-full rounded-lg border-gray-200 p-4 text-sm shadow-sm"
+                placeholder="Area/Locality"
+                required
+              />
+            </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div>
+                <label
+                  htmlFor="city"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  City
+                </label>
+                <input
+                  type="text"
+                  id="city"
+                  name="city"
+                  value={formData.city}
+                  onChange={handleChange}
+                  className="w-full rounded-lg border-gray-200 p-4 text-sm shadow-sm"
+                  placeholder="City"
+                  required
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="state"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  State
+                </label>
+                <input
+                  type="text"
+                  id="state"
+                  name="state"
+                  value={formData.state}
+                  onChange={handleChange}
+                  className="w-full rounded-lg border-gray-200 p-4 text-sm shadow-sm"
+                  placeholder="State"
+                  required
+                />
+              </div>
+            </div>
+
+            <div>
+              <label
+                htmlFor="zipcode"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Zipcode
+              </label>
+              <input
+                type="text"
+                id="zipcode"
+                name="zipcode"
+                value={formData.zipcode}
+                onChange={handleChange}
+                className="w-full rounded-lg border-gray-200 p-4 text-sm shadow-sm"
+                placeholder="Zipcode"
+                required
+              />
+            </div>
+
+            <div className="flex items-center">
+              <input
+                type="checkbox"
+                id="isDefault"
+                name="isDefault"
+                checked={formData.isDefault}
+                onChange={handleChange}
+                className="rounded border-gray-300"
+              />
+              <label htmlFor="isDefault" className="ml-2 text-sm text-gray-700">
+                Set as default address
+              </label>
+            </div>
+          </div>
+
+          <div className="flex justify-end mt-6 space-x-4">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-5 py-3 bg-gray-200 text-gray-800 rounded-lg text-sm font-semibold"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="px-5 py-3 bg-[#09274d] text-white rounded-lg text-sm font-semibold flex items-center"
+              disabled={loading}
+            >
+              {loading ? "Saving..." : "Save Address"}
+            </button>
+          </div>
         </form>
       </div>
     </div>
@@ -676,14 +867,14 @@ function OrderHistory() {
         {
           name: "Gold Standard Whey Protein",
           quantity: 1,
-          price: 2700
+          price: 2700,
         },
         {
           name: "Shaker Bottle",
           quantity: 1,
-          price: 500
-        }
-      ]
+          price: 500,
+        },
+      ],
     },
     {
       id: "ORD12346",
@@ -694,14 +885,14 @@ function OrderHistory() {
         {
           name: "Mass Gainer",
           quantity: 1,
-          price: 3500
+          price: 3500,
         },
         {
           name: "Training Gloves",
           quantity: 1,
-          price: 1000
-        }
-      ]
+          price: 1000,
+        },
+      ],
     },
     {
       id: "ORD12347",
@@ -712,14 +903,14 @@ function OrderHistory() {
         {
           name: "Pre-Workout Energy Drink",
           quantity: 2,
-          price: 1400
-        }
-      ]
-    }
+          price: 1400,
+        },
+      ],
+    },
   ]);
-  
+
   const [expandedOrder, setExpandedOrder] = useState(null);
-  
+
   useEffect(() => {
     // Fetch user orders
     const fetchOrders = async () => {
@@ -731,10 +922,10 @@ function OrderHistory() {
         console.error("Error fetching orders:", err);
       }
     };
-    
+
     fetchOrders();
   }, []);
-  
+
   const toggleOrderDetails = (orderId) => {
     if (expandedOrder === orderId) {
       setExpandedOrder(null);
@@ -742,7 +933,7 @@ function OrderHistory() {
       setExpandedOrder(orderId);
     }
   };
-  
+
   const getStatusColor = (status) => {
     switch (status) {
       case "Delivered":
@@ -757,11 +948,13 @@ function OrderHistory() {
         return "bg-gray-100 text-gray-800";
     }
   };
-  
+
   return (
     <div>
-      <h2 className="text-2xl font-semibold text-[#09274d] mb-6">Order History</h2>
-      
+      <h2 className="text-2xl font-semibold text-[#09274d] mb-6">
+        Order History
+      </h2>
+
       {orders.length === 0 ? (
         <div className="text-center py-8">
           <p className="text-gray-500">You haven't placed any orders yet.</p>
@@ -773,7 +966,7 @@ function OrderHistory() {
               key={order.id}
               className="border bg-white rounded-lg overflow-hidden"
             >
-              <div 
+              <div
                 className="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-50"
                 onClick={() => toggleOrderDetails(order.id)}
               >
@@ -783,16 +976,22 @@ function OrderHistory() {
                     {new Date(order.date).toLocaleDateString()}
                   </p>
                 </div>
-                
+
                 <div className="flex items-center">
-                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
+                      order.status
+                    )}`}
+                  >
                     {order.status}
                   </span>
                   <span className="ml-4 text-[#09274d] font-medium">
                     ₹{order.total.toLocaleString()}
                   </span>
                   <svg
-                    className={`w-5 h-5 ml-2 transform transition-transform ${expandedOrder === order.id ? "rotate-180" : ""}`}
+                    className={`w-5 h-5 ml-2 transform transition-transform ${
+                      expandedOrder === order.id ? "rotate-180" : ""
+                    }`}
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -807,26 +1006,32 @@ function OrderHistory() {
                   </svg>
                 </div>
               </div>
-              
+
               {expandedOrder === order.id && (
                 <div className="p-4 border-t border-gray-200 bg-gray-50">
                   <h4 className="font-medium mb-2">Order Items</h4>
-                  
+
                   <div className="space-y-2">
                     {order.items.map((item, index) => (
                       <div key={index} className="flex justify-between">
                         <div>
                           <p className="text-sm">{item.name}</p>
-                          <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
+                          <p className="text-xs text-gray-500">
+                            Qty: {item.quantity}
+                          </p>
                         </div>
-                        <p className="text-sm">₹{item.price.toLocaleString()}</p>
+                        <p className="text-sm">
+                          ₹{item.price.toLocaleString()}
+                        </p>
                       </div>
                     ))}
                   </div>
-                  
+
                   <div className="mt-4 pt-3 border-t border-gray-200 flex justify-between">
                     <p className="font-medium">Total</p>
-                    <p className="font-medium">₹{order.total.toLocaleString()}</p>
+                    <p className="font-medium">
+                      ₹{order.total.toLocaleString()}
+                    </p>
                   </div>
                 </div>
               )}
