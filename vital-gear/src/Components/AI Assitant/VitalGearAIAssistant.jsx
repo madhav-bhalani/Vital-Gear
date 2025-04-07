@@ -23,23 +23,8 @@ export default function VitalGearAIAssistant() {
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef(null);
 
-  // Sample product recommendations
-  const sampleProducts = [
-    {
-      id: 1,
-      name: "VitalPro Plant Protein",
-      description: "Premium plant-based protein with 25g protein per serving",
-      price: 49.99,
-      rating: 4.8,
-    },
-    {
-      id: 2,
-      name: "EcoFit Exercise Mat",
-      description: "Eco-friendly, non-slip yoga and exercise mat",
-      price: 35.99,
-      rating: 4.7,
-    },
-  ];
+  // API URL for your FastAPI backend
+  const API_URL = "http://localhost:8000";
 
   // Auto-scroll to bottom of messages
   useEffect(() => {
@@ -58,7 +43,68 @@ export default function VitalGearAIAssistant() {
     setInput(e.target.value);
   };
 
-  const handleSubmit = (e) => {
+  // Extract product information from text
+  const extractProductInfo = (text) => {
+    // Look for product mentions in the response
+    const products = [];
+    
+    // Try to parse product information based on patterns in the text
+    // This is a simple implementation and can be enhanced
+    const productRegex = /product:(.*?)(?=product:|$)/gs;
+    const matches = text.matchAll(productRegex);
+    
+    for (const match of matches) {
+      try {
+        const productText = match[1].trim();
+        const nameMatch = productText.match(/name:(.*?)(?=,|$)/);
+        const descMatch = productText.match(/description:(.*?)(?=,|$)/);
+        const priceMatch = productText.match(/price:(\d+\.?\d*)/);
+        const ratingMatch = productText.match(/rating:(\d+\.?\d*)/);
+        
+        if (nameMatch) {
+          products.push({
+            id: products.length + 1,
+            name: nameMatch[1].trim(),
+            description: descMatch ? descMatch[1].trim() : "Premium fitness product",
+            price: priceMatch ? parseFloat(priceMatch[1]) : 49.99,
+            rating: ratingMatch ? parseFloat(ratingMatch[1]) : 4.7,
+          });
+        }
+      } catch (error) {
+        console.error("Error parsing product info:", error);
+      }
+    }
+    
+    // Fallback: If no specific product format was found but product names are mentioned
+    if (products.length === 0) {
+      // Check for known product keywords
+      const keywords = [
+        { keyword: "protein", name: "VitalPro Plant Protein", price: 49.99 },
+        { keyword: "mat", name: "EcoFit Exercise Mat", price: 35.99 },
+        { keyword: "vitamin", name: "VitalBoost Multivitamin", price: 29.99 },
+        { keyword: "dumbbells", name: "FlexGrip Dumbbells", price: 79.99 },
+      ];
+      
+      for (const item of keywords) {
+        if (text.toLowerCase().includes(item.keyword.toLowerCase())) {
+          products.push({
+            id: products.length + 1,
+            name: item.name,
+            description: `Premium ${item.keyword} for your fitness needs`,
+            price: item.price,
+            rating: 4.7 + (Math.random() * 0.2).toFixed(1),
+          });
+          
+          // Limit to 2 products for now
+          if (products.length >= 2) break;
+        }
+      }
+    }
+    
+    return products;
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (input.trim() === "") return;
@@ -74,51 +120,54 @@ export default function VitalGearAIAssistant() {
     setMessages([...messages, userMessage]);
     setInput("");
 
-    // Simulate AI thinking
+    // Show typing indicator
     setIsTyping(true);
 
-    // Simulate AI response
-    setTimeout(() => {
-      setIsTyping(false);
+    try {
+      // Call the FastAPI backend
+      const response = await fetch(`${API_URL}/query`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ query: input }),
+      });
 
-      // Check if the user mentioned protein or specific products
-      const userInput = input.toLowerCase();
-
-      let botResponse;
-
-      if (
-        userInput.includes("vegan protein") ||
-        userInput.includes("plant protein")
-      ) {
-        botResponse = {
-          id: messages.length + 2,
-          sender: "bot",
-          content:
-            "Based on your interest in vegan protein, I'd recommend VitalPro Plant Protein. It's our top-rated plant-based formula with 25g protein per serving and a complete amino acid profile.",
-          products: [sampleProducts[0]],
-          timestamp: new Date(),
-        };
-      } else if (userInput.includes("yoga") || userInput.includes("mat")) {
-        botResponse = {
-          id: messages.length + 2,
-          sender: "bot",
-          content:
-            "For yoga enthusiasts, our EcoFit Exercise Mat is perfect. It's eco-friendly, provides excellent grip, and has cushioning for joint protection.",
-          products: [sampleProducts[1]],
-          timestamp: new Date(),
-        };
-      } else {
-        botResponse = {
-          id: messages.length + 2,
-          sender: "bot",
-          content:
-            "I'd be happy to help you find the right fitness products! Could you tell me more about your fitness goals or what specific products you're looking for?",
-          timestamp: new Date(),
-        };
+      if (!response.ok) {
+        throw new Error(`API request failed with status ${response.status}`);
       }
 
+      const data = await response.json();
+      const botResponseText = data.response;
+      
+      // Extract product recommendations from the response
+      const products = extractProductInfo(botResponseText);
+
+      // Create bot response
+      const botResponse = {
+        id: messages.length + 2,
+        sender: "bot",
+        content: botResponseText,
+        products: products,
+        timestamp: new Date(),
+      };
+
+      setIsTyping(false);
       setMessages((prevMessages) => [...prevMessages, botResponse]);
-    }, 1500);
+    } catch (error) {
+      console.error("Error fetching response:", error);
+      
+      // Handle error gracefully
+      setIsTyping(false);
+      const errorResponse = {
+        id: messages.length + 2,
+        sender: "bot",
+        content: "I'm having trouble connecting to my knowledge base right now. Please try again in a moment.",
+        timestamp: new Date(),
+      };
+      
+      setMessages((prevMessages) => [...prevMessages, errorResponse]);
+    }
   };
 
   const formatTime = (date) => {
