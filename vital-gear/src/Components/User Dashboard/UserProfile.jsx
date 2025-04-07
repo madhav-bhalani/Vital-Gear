@@ -131,6 +131,7 @@ function ProfileInfo() {
     if (userId) {
       fetchUser(userId, setLoading, setUser, setError);
     }
+    console.log('HG userId', userId);
   }, [userId]);
 
   useEffect(() => {

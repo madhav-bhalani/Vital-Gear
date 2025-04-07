@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { use } from "react";
 import { useState } from "react";
 import { createContext } from "react";
 import { useContext } from "react";
+import axios from "axios";
 
 const ModalContext = createContext();
 
@@ -54,6 +55,29 @@ export const ModalProvider = ({ children }) => {
   //userProfile Id
   const [userId, setUserId] = useState("");
 
+  useEffect(() => {
+    async function verify() {
+      console.log("HG modalProvider");
+      const response = await axios.post(
+        "http://localhost:3000/auth",
+        {},
+        { withCredentials: true }
+      );
+
+      if (response.status === 200) {
+        setUserId(response.data.user._id);
+        setFname(response.data.user.firstName);
+        setLname(response.data.user.lastName);
+        if (response.data.user.isAdmin === true) {
+          setAdmin(true);
+        }
+        addSignIn();
+      }
+    }
+
+    verify();
+  }, []);
+
   return (
     <ModalContext.Provider
       value={{
@@ -82,10 +106,10 @@ export const ModalProvider = ({ children }) => {
         togglePass,
         bread,
         toggleBread,
-        isAdmin, 
+        isAdmin,
         setAdmin,
         userId,
-        setUserId
+        setUserId,
       }}
     >
       {children}
