@@ -12,7 +12,6 @@ import SliderImage from "./SliderImage";
 import singleProduct from "../../controllers/singleProduct";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import Cookies from "js-cookie";
 
 export default function BuyProduct() {
   const [product, setProduct] = useState([]);
@@ -33,33 +32,52 @@ export default function BuyProduct() {
 
   const [cartItems, setCartItems] = useState([]);
 
-  const addToCart = async (productId) => {
-    try{
-      const response = await axios.post("http://localhost:3000/auth", {}, {withCredentials: true});
+  //CART for not logged in users
+  // const addToCart = async (productId) => {
+  //   try{
+  //     const response = await axios.post("http://localhost:3000/auth", {}, {withCredentials: true});
 
-    }catch(err){
-      if (err.response && err.response.status === 401) {
-        let cart = JSON.parse(localStorage.getItem('cartItems')) || [];
-        console.log('Current cart: ', cart);
+  //   }catch(err){
+  //     if (err.response && err.response.status === 401) {
+  //       let cart = JSON.parse(localStorage.getItem('cartItems')) || [];
+  //       console.log('Current cart: ', cart);
 
-        const existingItemIndex = cart.findIndex(item => item.id === productId);
-        if (existingItemIndex !== -1) {
-          cart[existingItemIndex].quantity += 1;
-          console.log('Updated cart (quantity increased): ', cart);
-        } else {
-          cart.push({ id: productId, quantity: 1 });
-          console.log('Updated cart (new item added): ', cart);
-        }
+  //       const existingItemIndex = cart.findIndex(item => item.id === productId);
+  //       if (existingItemIndex !== -1) {
+  //         cart[existingItemIndex].quantity += 1;
+  //         console.log('Updated cart (quantity increased): ', cart);
+  //       } else {
+  //         cart.push({ id: productId, quantity: 1 });
+  //         console.log('Updated cart (new item added): ', cart);
+  //       }
 
-        localStorage.setItem('cartItems', JSON.stringify(cart));
-        Cookies.set("cartItems", JSON.stringify(cart), {expires: 7, path: "/"});
-        alert('Item updated in local storage cart');
-      } else {
-        console.log('ERROR IN ADDING TO CART', err);
-        alert('error while adding to local storage');
-      }
+  //       localStorage.setItem('cartItems', JSON.stringify(cart));
+  //       Cookies.set("cartItems", JSON.stringify(cart), {expires: 7, path: "/"});
+  //       alert('Item updated in local storage cart');
+  //     } else {
+  //       console.log('ERROR IN ADDING TO CART', err);
+  //       alert('error while adding to local storage');
+  //     }
+  //   }
+  // }
+
+  //CART for logged in users
+
+  const addToCart = async (id) => {
+    cartItems.push({ productId: id, itemQuantity: 1 });
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/shopping/cart",
+        {cartItems: JSON.stringify(cartItems)},
+        { withCredentials: true }
+      );
+      console.log("cart data: ", response.data);
+      alert(response.data.message);
+    } catch (err) {
+      alert(err.response.data.error);
+      console.log(err.response.data.error);
     }
-  }
+  };
 
   useEffect(() => {
     if (productId) {
@@ -165,9 +183,10 @@ export default function BuyProduct() {
                         +
                       </button>
                     </div>
-                    <button 
-                    onClick={() => addToCart(productId)}
-                     className="px-4 py-2 font-semibold text-[#DBE2EF] bg-[#112D4E] rounded-md text-lg hover:bg-blue-700">
+                    <button
+                      onClick={() => addToCart(productId)}
+                      className="px-4 py-2 font-semibold text-[#DBE2EF] bg-[#112D4E] rounded-md text-lg hover:bg-blue-700"
+                    >
                       Add to Cart
                     </button>
                   </div>
