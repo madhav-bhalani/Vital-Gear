@@ -1,13 +1,24 @@
 import React from "react";
 import "./Cart.jsx";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useModal } from "../ModalContext";
+import fetchCart from "../../controllers/fetchCart.js";
 
 export default function Cart() {
   const { cartVisible, handleCart } = useModal();
-  let cart = [1, 2, 3,4,5];
 
-  
+  const [cartItems, setCartItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchCart(setCartItems, setLoading, setError);
+  }, []);
+
+  console.log(cartItems);
+
+  if (loading) return <h1>Loading...</h1>;
+  if (error) return <h1>{error}</h1>;
 
   return (
     <>
@@ -43,9 +54,21 @@ export default function Cart() {
           </div>
           {/* Items */}
           <div className="flex flex-col gap-5">
-            {cart.map((value, i) => {
-              return <CartItem key={i} />;
-            })}
+            {cartItems.length > 0 ? (
+              cartItems.map((item) => (
+                <CartItem
+                  key={item.productId._id}
+                  image={item.productId.images[0]?.url}
+                  title={`${item.productId.brandName} ${item.productId.productName}`}
+                  size={`${item.productId.sizes.weight[0]}g`}
+                  flavour={item.productId.productDetails.flavours[0]}
+                  price={item.productId.price.productPrice}
+                  quantity={item.itemQuantity}
+                />
+              ))
+            ) : (
+              <p>No items in cart</p>
+            )}
           </div>
           <div className="bg-[#F9F7F7] flex flex-col p-5 rounded-md">
             <div className="flex flex-row justify-between p-3 border-b-2 border-gray-300">
@@ -76,20 +99,18 @@ export default function Cart() {
   );
 }
 
-function CartItem() {
+function CartItem({ image, title, size, flavour, price, quantity }) {
   return (
     <>
       <div className="flex flex-col">
         <div className="flex flex-row gap-10 justify-between items-cente border-b-2 border-[#112D4E] p-3">
           <div className="flex flex-row gap-3 ">
-            <img
-              src="/products/creatine.webp"
-              alt=""
-              className="w-32 rounded-md"
-            />
+            <img src={image} alt="" className="w-32 rounded-md" />
             <div className="flex flex-col">
-              <p className="font-semibold">VitalGear Creatine & Shaker</p>
-              <p>0.55lb, Unflavoured</p>
+              <p className="font-semibold">{title}</p>
+              <p>
+                {size}, {flavour}
+              </p>
               <div className="flex flex-row items-center gap-2">
                 {/* DropDown Qunatity Options */}
                 {/* <div>
@@ -102,8 +123,8 @@ function CartItem() {
                   </select>
                 </div> */}
 
-                <ItemCounter/>
-               
+                <ItemCounter quantity={quantity} />
+
                 <div>
                   <button className="font-semibold">Remove</button>
                 </div>
@@ -111,7 +132,7 @@ function CartItem() {
             </div>
           </div>
           <div>
-            <p>₹1898</p>
+            <p>₹{price}</p>
           </div>
         </div>
       </div>
@@ -119,7 +140,7 @@ function CartItem() {
   );
 }
 
-function ItemCounter(){
+function ItemCounter() {
   const [quantity, setQuantity] = useState(1);
 
   const handleQuantityChange = (amount) => {
@@ -128,28 +149,22 @@ function ItemCounter(){
       return newQuantity > 0 ? newQuantity : 1;
     });
   };
-  return(
+  return (
     <>
-     <div className="flex bg-[#112D4E] text-[#DBE2EF] items-center border border-gray-300 rounded">
-                  <button
-                    className="px-2 py-1"
-                    onClick={() => handleQuantityChange(-1)}
-                  >
-                    −
-                  </button>
-                  <input
-                    type="text"
-                    className="text-[#3f72af] w-12 text-center border-none focus:ring-0"
-                    value={quantity}
-                    readOnly
-                  />
-                  <button
-                    className="px-2 py-1"
-                    onClick={() => handleQuantityChange(1)}
-                  >
-                    +
-                  </button>
-                </div>
+      <div className="flex bg-[#112D4E] text-[#DBE2EF] items-center border border-gray-300 rounded">
+        <button className="px-2 py-1" onClick={() => handleQuantityChange(-1)}>
+          −
+        </button>
+        <input
+          type="text"
+          className="text-[#3f72af] w-12 text-center border-none focus:ring-0"
+          value={quantity}
+          readOnly
+        />
+        <button className="px-2 py-1" onClick={() => handleQuantityChange(1)}>
+          +
+        </button>
+      </div>
     </>
   );
 }

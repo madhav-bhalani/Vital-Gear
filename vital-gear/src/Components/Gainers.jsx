@@ -6,7 +6,7 @@ import Footer from "./Footer";
 import Pagination from "./Pagination";
 import SignIn from "./SignIn";
 import SignUp from "./SignUp";
-import ShoppingCart from "./ShoppingCart";
+import Cart from "./Cart";
 import Basics from "./Basics";
 import fetchProducts from "../../controllers/fetchProduct";
 
@@ -84,7 +84,7 @@ export default function Gainers() {
       </div>
 
       <Basics />
-      <ShoppingCart />
+      <Cart />
     </>
   );
 }

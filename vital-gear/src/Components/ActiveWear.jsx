@@ -3,7 +3,6 @@ import Header from "./Header";
 import Breadcrumb from "./Breadcrumb";
 import ShopItem from "./ShopItem";
 import Pagination from "./Pagination";
-import ShoppingCart from "./ShoppingCart";
 import Basics from "./Basics";
 import fetchProducts from "../../controllers/fetchProduct";
 
@@ -93,7 +92,7 @@ export default function ActiveWear() {
       </div>
 
       <Basics />
-      <ShoppingCart />
+      <Cart />
     </>
   );
 }

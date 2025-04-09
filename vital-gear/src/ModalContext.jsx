@@ -26,9 +26,7 @@ export const ModalProvider = ({ children }) => {
 
   const [cartVisible, setCartVisible] = useState(false);
 
-  const handleCartClick = () => setCartVisible(true);
-
-  const handleCart = () => setCartVisible(false);
+  const handleCart = () => setCartVisible(!cartVisible);
 
   const [isSignIn, setSignIn] = useState(false);
   const addSignIn = () => setSignIn(true);
@@ -70,6 +68,8 @@ export const ModalProvider = ({ children }) => {
         setLname(response.data.user.lastName);
         if (response.data.user.isAdmin === true) {
           setAdmin(true);
+        } else {
+          setAdmin(false);
         }
         addSignIn();
       }
@@ -89,7 +89,6 @@ export const ModalProvider = ({ children }) => {
         handleSignUpModal,
         userInfo,
         cartVisible,
-        handleCartClick,
         handleCart,
         isSignIn,
         setSignIn,

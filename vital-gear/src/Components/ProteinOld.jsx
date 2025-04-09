@@ -6,7 +6,7 @@ import Footer from "./Footer";
 import Pagination from "./Pagination";
 import SignIn from "./SignIn";
 import SignUp from "./SignUp";
-import ShoppingCart from "./ShoppingCart";
+import Cart from "./Cart";
 import Basics from "./Basics";
 import productsData from "./productsData.json";
 
@@ -26,8 +26,7 @@ export default function Protein() {
           </span>
         </div>
         <div className="py-3">
-         <p className="text-left text-gray-500">
-         
+          <p className="text-left text-gray-500">
             Introducing VitalGear Whey Protein, the ultimate choice for fast
             muscle recovery and prevention of muscle breakdown. Our whey protein
             is a complete protein, containing all nine essential amino acids,
@@ -62,9 +61,8 @@ export default function Protein() {
         <Pagination />
       </div>
 
-      <Basics/>
-      <ShoppingCart />
-      
+      <Basics />
+      <Cart />
     </>
   );
 }

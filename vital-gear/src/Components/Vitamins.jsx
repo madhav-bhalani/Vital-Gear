@@ -3,7 +3,7 @@ import Header from "./Header";
 import Breadcrumb from "./Breadcrumb";
 import ShopItem from "./ShopItem";
 import Pagination from "./Pagination";
-import ShoppingCart from "./ShoppingCart";
+import Cart from "./Cart";
 import Basics from "./Basics";
 import fetchProducts from "../../controllers/fetchProduct";
 
@@ -54,9 +54,7 @@ export default function Vitamins() {
                   product.productName || "Product"
                 }`}
                 size={
-                  product.sizes?.weight[0] ||
-                  product.sizes?.shirtSize[1] ||
-                  " "
+                  product.sizes?.weight[0] || product.sizes?.shirtSize[1] || " "
                 }
                 flavour={
                   product.productDetails?.flavours?.[0] ||
@@ -78,7 +76,7 @@ export default function Vitamins() {
       </div>
 
       <Basics />
-      <ShoppingCart />
+      <Cart />
     </>
   );
 }

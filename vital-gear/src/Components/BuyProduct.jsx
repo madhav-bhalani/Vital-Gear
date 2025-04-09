@@ -32,6 +32,7 @@ export default function BuyProduct() {
 
   const [cartItems, setCartItems] = useState([]);
 
+  //CART for logged in users
   const addToCart = async (id) => {
     cartItems.push({ productId: id, itemQuantity: 1 });
     try {
@@ -103,8 +104,6 @@ export default function BuyProduct() {
       }
     }
   };
-
-  //CART for logged in users
 
   useEffect(() => {
     if (productId) {

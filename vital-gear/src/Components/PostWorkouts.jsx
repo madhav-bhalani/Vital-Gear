@@ -1,21 +1,21 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import Header from "./Header";
 import Breadcrumb from "./Breadcrumb";
 import ShopItem from "./ShopItem";
 import fetchProducts from "../../controllers/fetchProduct";
 import Pagination from "./Pagination";
-import ShoppingCart from "./ShoppingCart";
+import Cart from "./Cart";
 
 import Basics from "./Basics";
 
 export default function PostWorkouts() {
   const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-  
-    useEffect(() => {
-      fetchProducts("post-workout", setProducts, setLoading, setError);
-    }, []);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchProducts("post-workout", setProducts, setLoading, setError);
+  }, []);
   return (
     <>
       <Header />
@@ -42,33 +42,32 @@ export default function PostWorkouts() {
         <div className="h-px bg-[#09274d] mt-3"></div>
 
         <div className="flex flex-row flex-wrap gap-10 my-5">
-                  {products.length > 0 ? (
-                    products.map((product) => (
-                      <ShopItem
-                        key={product._id}
-                        image={product.images[0].url || "default-image-url"}
-                        title={`${product.brandName || "Unknown"} ${
-                          product.productName || "Product"
-                        }`}
-                        size={product.sizes?.weight[1] || "N/A"}
-                        flavour={product.productDetails?.flavours?.[0] || "N/A"}
-                        price={product.price?.productPrice || 0}
-                        onSale={product.price.onSale}
-                      />
-                    ))
-                  ) : (
-                    <p>No products available</p>
-                  )}
-                </div>
+          {products.length > 0 ? (
+            products.map((product) => (
+              <ShopItem
+                key={product._id}
+                image={product.images[0].url || "default-image-url"}
+                title={`${product.brandName || "Unknown"} ${
+                  product.productName || "Product"
+                }`}
+                size={product.sizes?.weight[1] || "N/A"}
+                flavour={product.productDetails?.flavours?.[0] || "N/A"}
+                price={product.price?.productPrice || 0}
+                onSale={product.price.onSale}
+              />
+            ))
+          ) : (
+            <p>No products available</p>
+          )}
+        </div>
       </div>
 
       <div className="pb-10">
         <Pagination />
       </div>
 
-      <Basics/>
-      <ShoppingCart />
-      
+      <Basics />
+      <Cart />
     </>
   );
 }

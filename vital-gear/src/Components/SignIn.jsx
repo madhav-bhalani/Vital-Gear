@@ -13,6 +13,7 @@ export default function SignIn() {
     setLname,
     pass,
     togglePass,
+    isAdmin,
     setAdmin,
     setUserId,
   } = useModal();
@@ -41,10 +42,13 @@ export default function SignIn() {
         setUserId(response.data.user._id);
         setFname(response.data.user.firstName);
         setLname(response.data.user.lastName);
-        // console.log("user: " + fname + " " + lname);
         if (response.data.user.isAdmin === true) {
           setAdmin(true);
+        } else {
+          setAdmin(false);
         }
+        console.log("admin status: ", isAdmin);
+        // console.log("user: " + fname + " " + lname);
         addSignIn();
         handleCloseModal();
         // Show success message

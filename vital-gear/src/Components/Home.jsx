@@ -8,9 +8,8 @@ import Features from "./Features";
 import BestSelling from "./BestSelling";
 import Footer from "./Footer";
 import { Pricing } from "./Pricing";
-import ShoppingCart from "./ShoppingCart";
-import Basics from "./Basics";
 import Cart from "./Cart";
+import Basics from "./Basics";
 
 const App = () => {
   const images = ["/carousel/1.png", "/carousel/2.png", "/carousel/3.png"];
@@ -25,7 +24,7 @@ const App = () => {
       <Pricing />
 
       <Cart />
-      {/* <ShoppingCart /> */}
+      {/* <Cart /> */}
 
       <Basics />
     </div>
