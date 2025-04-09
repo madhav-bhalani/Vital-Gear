@@ -320,7 +320,7 @@ function AddressManagement() {
       addressLine2: "Apt 4B",
       city: "Mumbai",
       state: "Maharashtra",
-      pincode: "400001",
+      zipcode: "400001",
       isDefault: true,
     },
     {
@@ -330,7 +330,7 @@ function AddressManagement() {
       addressLine2: "Building C, Floor 3",
       city: "Mumbai",
       state: "Maharashtra",
-      pincode: "400051",
+      zipcode: "400051",
       isDefault: false,
     },
   ]);
@@ -441,7 +441,7 @@ function AddressManagement() {
                 <p>{address.addressLine1}</p>
                 {address.addressLine2 && <p>{address.addressLine2}</p>}
                 <p>
-                  {address.city}, {address.state} {address.pincode}
+                  {address.city}, {address.state} {address.zipcode}
                 </p>
               </div>
 
@@ -503,13 +503,15 @@ function AddressManagement() {
 // Address Modal Component
 function AddressModal({ address, onClose, onSave }) {
   const [formData, setFormData] = useState({
-    id: address?.id || null,
+    id: address?._id || null,
     name: address?.name || "",
-    addressLine1: address?.addressLine1 || "",
-    addressLine2: address?.addressLine2 || "",
+    house: address?.house || "",
+    apartment: address?.apartment || "",
     city: address?.city || "",
+    area: address?.area || "",
     state: address?.state || "",
-    pincode: address?.pincode || "",
+    landmark: address?.landmark || "",
+    zipcode: address?.zipcode || "",
     isDefault: address?.isDefault || false,
   });
 
@@ -640,14 +642,14 @@ function AddressModal({ address, onClose, onSave }) {
             </div>
             
             <div>
-              <label htmlFor="pincode" className="block text-sm font-medium text-gray-700 mb-1">
+              <label htmlFor="zipcode" className="block text-sm font-medium text-gray-700 mb-1">
                 PIN Code
               </label>
               <input
                 type="text"
-                id="pincode"
-                name="pincode"
-                value={formData.pincode}
+                id="zipcode"
+                name="zipcode"
+                value={formData.zipcode}
                 onChange={handleChange}
                 className="w-full rounded-lg border-gray-200 p-3 text-sm shadow-sm"
                 required
