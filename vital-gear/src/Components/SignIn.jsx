@@ -37,20 +37,32 @@ export default function SignIn() {
         { withCredentials: true }
       ); // Send cookies
 
-      // console.log("Login successful:", response.data.user);
-      setUserId(response.data.user._id);
-      setFname(response.data.user.firstName);
-      setLname(response.data.user.lastName);
-      // console.log("user: " + fname + " " + lname);
-      if(response.data.user.isAdmin === true){
-        setAdmin(true);
+      if (response.status === 200) {
+        setUserId(response.data.user._id);
+        setFname(response.data.user.firstName);
+        setLname(response.data.user.lastName);
+        // console.log("user: " + fname + " " + lname);
+        if (response.data.user.isAdmin === true) {
+          setAdmin(true);
+        }
+        addSignIn();
+        handleCloseModal();
+        // Show success message
+        const localCartItems =
+          JSON.parse(localStorage.getItem("cartItems")) || [];
+        if (localCartItems.length > 0) {
+          await axios.post(
+            "http://localhost:3000/shopping/cart",
+            { cartItems: JSON.stringify(localCartItems) },
+            { withCredentials: true }
+          );
+          localStorage.removeItem("cartItems"); // Clear local storage after sending
+        }
+        alert(response.data.message);
+        // Navigate to home page after login
+        navigate("/");
       }
-      addSignIn();
-      handleCloseModal();
-      alert(response.data.message); // Show success message
-
-      // Navigate to home page after login
-      navigate("/");
+      // console.log("Login successful:", response.data.user);
     } catch (err) {
       console.error("Login failed:", err); // Log the entire error object
       console.error("Error response:", err.response); // Log the response object if it exists
@@ -121,7 +133,10 @@ export default function SignIn() {
                 minLength={8}
                 required
               />
-              <span className="absolute inset-y-0 end-0 grid place-content-center px-4" onClick={togglePass}>
+              <span
+                className="absolute inset-y-0 end-0 grid place-content-center px-4"
+                onClick={togglePass}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="size-4 text-gray-400"
