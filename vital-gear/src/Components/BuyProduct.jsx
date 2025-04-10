@@ -32,8 +32,8 @@ export default function BuyProduct() {
   const [cartItems, setCartItems] = useState([]);
 
   //CART for logged in users
-  const addToCart = async (id) => {
-    cartItems.push({ productId: id, itemQuantity: 1 });
+  const addToCart = async (id, quantity) => {
+    cartItems.push({ productId: id, itemQuantity: quantity });
     try {
       const response = await axios.post(
         "http://localhost:3000/shopping/cart",
@@ -49,7 +49,7 @@ export default function BuyProduct() {
   };
 
   // CART for not logged in users
-  const tempCart = async (productId) => {
+  const tempCart = async (productId, quantity) => {
     try {
       const response = await axios.post(
         "http://localhost:3000/auth",
@@ -58,7 +58,7 @@ export default function BuyProduct() {
       );
       if (response.status === 200) {
         console.log("User is logged in, proceed with adding to cart");
-        addToCart(productId);
+        addToCart(productId, quantity);
       }
     } catch (err) {
       //old code
@@ -89,10 +89,10 @@ export default function BuyProduct() {
           (item) => item.productId === productId
         );
         if (existingItemIndex !== -1) {
-          cartItems[existingItemIndex].itemQuantity += 1;
+          cartItems[existingItemIndex].itemQuantity += quantity;
           console.log("Updated cart (quantity increased): ", cartItems);
         } else {
-          cartItems.push({ productId: productId, itemQuantity: 1 });
+          cartItems.push({ productId: productId, itemQuantity: quantity });
           console.log("Updated cart (new item added): ", cartItems);
         }
         localStorage.setItem("cartItems", JSON.stringify(cartItems));
@@ -209,7 +209,7 @@ export default function BuyProduct() {
                       </button>
                     </div>
                     <button
-                      onClick={() => tempCart(productId)}
+                      onClick={() => tempCart(productId, quantity)}
                       className="px-4 py-2 font-semibold text-[#DBE2EF] bg-[#112D4E] rounded-md text-lg hover:bg-[#DBE2EF] hover:text-[#112D4E] duration-500"
                     >
                       Add to Cart
