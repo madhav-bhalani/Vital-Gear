@@ -36,7 +36,7 @@ export default function ShopItem({
           <div className=" flex flex-col gap-2 text-lg ">
             <p>{title},</p>
             <p className="font-semibold">
-              {size}g, {flavour}
+              {size}, {flavour}
             </p>
             <p className="font-semibold">₹{price}</p>
             <div className="flex rounded-md bg-[#3F72AF] text-[#dae0ef] font-semibold gap-1 items-center p-1 w-max">

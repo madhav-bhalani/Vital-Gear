@@ -53,21 +53,17 @@ export default function Gainers() {
             products.map((product) => (
               <ShopItem
                 key={product._id}
-                image={product.images[0].url || "default-image-url"}
-                title={`${product.brandName || "Unknown"} ${
-                  product.productName || "Product"
+                image={product.images[0].url || " "}
+                title={`${product.brandName || " "} ${
+                  product.productName || " "
                 }`}
-                size={
-                  product.sizes?.weight[0] ||
-                  product.sizes?.shirtSize[1] ||
-                  "N/A"
-                }
+                size={`${product.sizes?.weight[1]}g` || ' '}
                 flavour={
                   product.productDetails?.flavours?.[0] ||
                   product.productDetails?.colors[0] ||
-                  "N/A"
+                  " "
                 }
-                price={product.price?.productPrice || "N/A"}
+                price={product.price?.productPrice || " "}
                 onSale={product.price.onSale}
                 id={product._id}
                 category={"Gainers"}

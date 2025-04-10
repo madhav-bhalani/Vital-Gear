@@ -5,6 +5,7 @@ import ShopItem from "./ShopItem";
 import Pagination from "./Pagination";
 import Basics from "./Basics";
 import fetchProducts from "../../controllers/fetchProduct";
+import Cart from "./Cart";
 
 export default function ActiveWear() {
   const [products, setProducts] = useState([]);
@@ -63,22 +64,22 @@ export default function ActiveWear() {
             products.map((product) => (
               <ShopItem
                 key={product._id}
-                image={product.images[0].url || "default-image-url"}
-                title={`${product.brandName || "Unknown"} ${
-                  product.productName || "Product"
+                image={product.images[0].url || " "}
+                title={`${product.brandName || " "} ${
+                  product.productName || " "
                 }`}
                 size={
-                  product.sizes?.weight[0] ||
                   product.sizes?.shirtSize[1] ||
-                  "N/A"
+                  " "
                 }
                 flavour={
-                  product.productDetails?.flavours?.[0] ||
                   product.productDetails?.colors[0] ||
-                  "N/A"
+                  " "
                 }
-                price={product.price?.productPrice || "N/A"}
+                price={product.price?.productPrice || 0}
                 onSale={product.price.onSale}
+                id={product._id}
+                category={"Active Wear"}
               />
             ))
           ) : (

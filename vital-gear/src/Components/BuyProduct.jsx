@@ -19,15 +19,14 @@ export default function BuyProduct() {
   const [error, setError] = useState(null);
   const [quantity, setQuantity] = useState(1);
 
+
+  let bestSelling = [1, 2, 3, 4];
   const handleQuantityChange = (amount) => {
     setQuantity((prevQuantity) => {
       const newQuantity = prevQuantity + amount;
-      return newQuantity > 0 ? newQuantity : 1;
+      return newQuantity > 0 && newQuantity <= 5 ? newQuantity : prevQuantity;
     });
   };
-
-  let bestSelling = [1, 2, 3, 4];
-
   const { productId } = useParams();
 
   const [cartItems, setCartItems] = useState([]);
@@ -211,7 +210,7 @@ export default function BuyProduct() {
                     </div>
                     <button
                       onClick={() => tempCart(productId)}
-                      className="px-4 py-2 font-semibold text-[#DBE2EF] bg-[#112D4E] rounded-md text-lg hover:bg-blue-700"
+                      className="px-4 py-2 font-semibold text-[#DBE2EF] bg-[#112D4E] rounded-md text-lg hover:bg-[#DBE2EF] hover:text-[#112D4E] duration-500"
                     >
                       Add to Cart
                     </button>
