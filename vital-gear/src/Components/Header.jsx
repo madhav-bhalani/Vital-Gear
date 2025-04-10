@@ -13,6 +13,7 @@ function Header() {
     handleLoginClick,
     handleSignUpClick,
     handleCart,
+    cartVisible,
     isSignIn,
     fname,
     lname,
@@ -24,7 +25,7 @@ function Header() {
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  console.log("HG Admin after", isAdmin);
+  console.log("HG Cart: ", cartVisible);
 
   let firstName = fname;
   let lastName = lname;

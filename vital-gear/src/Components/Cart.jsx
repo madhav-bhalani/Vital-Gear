@@ -11,11 +11,15 @@ export default function Cart() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  console.log("HG Cart inside Cart: ",cartVisible);
   useEffect(() => {
     fetchCart(setCartItems, setLoading, setError);
   }, []);
 
-  console.log(cartItems);
+  console.log("HG cart items: ",cartItems);
+
+  let totalPrice = 0;
+
 
   if (loading) return <h1>Loading...</h1>;
   if (error) return <h1>{error}</h1>;
@@ -56,15 +60,17 @@ export default function Cart() {
           <div className="flex flex-col gap-5">
             {cartItems.length > 0 ? (
               cartItems.map((item) => (
+                totalPrice = totalPrice + (item.productId?.price?.productPrice || item.price?.productPrice) * item.itemQuantity,
                 <CartItem
-                  key={item.productId._id}
-                  image={item.productId.images[0]?.url}
-                  title={`${item.productId.brandName} ${item.productId.productName}`}
-                  size={`${item.productId.sizes.weight[0]}g`}
-                  flavour={item.productId.productDetails.flavours[0]}
-                  price={item.productId.price.productPrice}
+                  key={item.productId?._id || item._id}
+                  image={item.productId?.images?.[0]?.url || item.images?.[0]?.url}
+                  title={`${item.productId?.brandName || item.brandName} ${item.productId?.productName || item.productName}`}
+                  size={`${item.productId?.sizes?.weight?.[0] || item.sizes?.weight?.[0]}g`}
+                  flavour={item.productId?.productDetails?.flavours?.[0] || item.productDetails?.flavours?.[0]}
+                  price={item.productId?.price?.productPrice || item.price?.productPrice}
                   quantity={item.itemQuantity}
                 />
+                
               ))
             ) : (
               <p>No items in cart</p>
@@ -73,19 +79,19 @@ export default function Cart() {
           <div className="bg-[#F9F7F7] flex flex-col p-5 rounded-md">
             <div className="flex flex-row justify-between p-3 border-b-2 border-gray-300">
               <p>Subtotal</p>
-              <p>₹5694</p>
+              <p>{totalPrice}</p>
             </div>
             <div className="flex flex-row justify-between p-3 border-b-2 border-gray-300">
               <p>Shipping</p>
               <p>Free Delivery</p>
             </div>
-            <div className="flex flex-row justify-between p-3 border-b-2 border-gray-300">
+            {/* <div className="flex flex-row justify-between p-3 border-b-2 border-gray-300">
               <p>Tax</p>
               <p>₹0.00</p>
-            </div>
+            </div> */}
             <div className="flex flex-row justify-between p-3 font-semibold">
               <p>Order total</p>
-              <p>₹5694</p>
+              <p>{totalPrice}</p>
             </div>
           </div>
           <div className="flex flex-row-reverse">
@@ -111,7 +117,8 @@ function CartItem({ image, title, size, flavour, price, quantity }) {
               <p>
                 {size}, {flavour}
               </p>
-              <div className="flex flex-row items-center gap-2">
+              <div className="flex flex-col gap-2">
+                <p className="font-semibold">Qty: {quantity}</p>
                 {/* DropDown Qunatity Options */}
                 {/* <div>
                   <select className="w-max rounded-lg border-gray-200 bg-[#F9F7F7] p-3 text-sm shadow-sm">
@@ -123,10 +130,10 @@ function CartItem({ image, title, size, flavour, price, quantity }) {
                   </select>
                 </div> */}
 
-                <ItemCounter quantity={quantity} />
+                {/* <ItemCounter quantity={quantity} /> */}
 
                 <div>
-                  <button className="font-semibold">Remove</button>
+                  <button className="hover:underline">Remove</button>
                 </div>
               </div>
             </div>
@@ -140,31 +147,31 @@ function CartItem({ image, title, size, flavour, price, quantity }) {
   );
 }
 
-function ItemCounter() {
-  const [quantity, setQuantity] = useState(1);
+// function ItemCounter() {
+//   const [quantity, setQuantity] = useState(1);
 
-  const handleQuantityChange = (amount) => {
-    setQuantity((prevQuantity) => {
-      const newQuantity = prevQuantity + amount;
-      return newQuantity > 0 ? newQuantity : 1;
-    });
-  };
-  return (
-    <>
-      <div className="flex bg-[#112D4E] text-[#DBE2EF] items-center border border-gray-300 rounded">
-        <button className="px-2 py-1" onClick={() => handleQuantityChange(-1)}>
-          −
-        </button>
-        <input
-          type="text"
-          className="text-[#3f72af] w-12 text-center border-none focus:ring-0"
-          value={quantity}
-          readOnly
-        />
-        <button className="px-2 py-1" onClick={() => handleQuantityChange(1)}>
-          +
-        </button>
-      </div>
-    </>
-  );
-}
+//   const handleQuantityChange = (amount) => {
+//     setQuantity((prevQuantity) => {
+//       const newQuantity = prevQuantity + amount;
+//       return newQuantity > 0 ? newQuantity : 1;
+//     });
+//   };
+//   return (
+//     <>
+//       <div className="flex bg-[#112D4E] text-[#DBE2EF] items-center border border-gray-300 rounded">
+//         <button className="px-2 py-1" onClick={() => handleQuantityChange(-1)}>
+//           −
+//         </button>
+//         <input
+//           type="text"
+//           className="text-[#3f72af] w-12 text-center border-none focus:ring-0"
+//           value={quantity}
+//           readOnly
+//         />
+//         <button className="px-2 py-1" onClick={() => handleQuantityChange(1)}>
+//           +
+//         </button>
+//       </div>
+//     </>
+//   );
+// }
