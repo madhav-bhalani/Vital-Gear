@@ -3,6 +3,7 @@ import "./Cart.jsx";
 import { useState, useEffect } from "react";
 import { useModal } from "../ModalContext";
 import fetchCart from "../../controllers/fetchCart.js";
+import axios from "axios";
 
 export default function Cart() {
   const { cartVisible, handleCart } = useModal();
@@ -10,6 +11,31 @@ export default function Cart() {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const removeCartItem = async (productId) => {
+    try{
+      const response = await axios.delete(`http://localhost:3000/shopping/cart/${productId}`, {
+        withCredentials: true,
+      });
+      console.log("Server response:", response.data);
+      if (response.status === 200) {
+        setCartItems((prevItems) =>
+          prevItems.filter((item) => item.productId._id !== productId)
+        );
+      }
+    } catch (err) {
+      if(err.response && err.response.status === 401) {
+        // User is logged out, remove item from localStorage
+        const localCart = JSON.parse(localStorage.getItem("cartItems")) || [];
+        const updatedCart = localCart.filter((item) => item.productId !== productId);
+        localStorage.setItem("cartItems", JSON.stringify(updatedCart));
+        setCartItems(updatedCart);
+      }
+      else{
+        setError(err.message || "An error occurred while removing the item.");
+      }
+    }
+  }
 
   console.log("HG Cart inside Cart: ",cartVisible);
   useEffect(() => {
@@ -69,6 +95,7 @@ export default function Cart() {
                   flavour={item.productId?.productDetails?.flavours?.[0] || item.productDetails?.flavours?.[0]}
                   price={item.productId?.price?.productPrice || item.price?.productPrice}
                   quantity={item.itemQuantity}
+                  removeFunc={() => removeCartItem(item.productId?._id || item._id)}
                 />
                 
               ))
@@ -105,7 +132,7 @@ export default function Cart() {
   );
 }
 
-function CartItem({ image, title, size, flavour, price, quantity }) {
+function CartItem({removeFunc, image, title, size, flavour, price, quantity }) {
   return (
     <>
       <div className="flex flex-col">
@@ -133,7 +160,7 @@ function CartItem({ image, title, size, flavour, price, quantity }) {
                 {/* <ItemCounter quantity={quantity} /> */}
 
                 <div>
-                  <button className="hover:underline">Remove</button>
+                  <button className="hover:underline" onClick={removeFunc}>Remove</button>
                 </div>
               </div>
             </div>
