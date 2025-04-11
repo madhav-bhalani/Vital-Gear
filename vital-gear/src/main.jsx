@@ -24,6 +24,7 @@ import Dashboard from "./Components/Dashboard/Dashboard";
 import ProductDashboard from "./Components/Dashboard/AdminProducts";
 import EditProduct from "./Components/Dashboard/EditProduct";
 import UserProfile from "./Components/User Dashboard/UserProfile";
+import AdminOrders from "./Components/Dashboard/AdminOrders";
 
 const router = createBrowserRouter([
   {
@@ -31,7 +32,7 @@ const router = createBrowserRouter([
     element: <AdminLayout />,
     children: [
       { index: true, element: <Dashboard /> },
-      // { path: "orders", element: <OrdersList /> },
+      { path: "orders", element: <AdminOrders/>},
       { path: "products", element: <ProductDashboard /> },
       { path: "products/add", element: <AddProduct /> },
       { path: "products/edit/:id", element: <EditProduct /> },
@@ -78,7 +79,7 @@ const router = createBrowserRouter([
   {
     path: "/User",
     element: <UserProfile />,
-  },
+  }
   // {
   //   path: "/Dashboard",
   //   element: <AddProduct />,
