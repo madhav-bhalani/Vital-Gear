@@ -1,91 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Search, Eye, ArrowUpDown, Loader } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import allOrders from "../../../controllers/Admin/allOrders"; // Adjust the import path as needed
 
 export default function AdminOrders() {
-  // Static sample order data
-  const sampleOrders = [
-    {
-      _id: "6580df21a12345",
-      orderId: "ORD-568923",
-      userId: "USR-34567",
-      userName: "John Doe",
-      createdAt: "2025-04-08T14:32:11Z",
-      totalAmount: 129.99,
-      status: "delivered",
-      items: 3,
-      shippingAddress: "123 Main St, Anytown, CA"
-    },
-    {
-      _id: "6580df21b67890",
-      orderId: "ORD-568924",
-      userId: "USR-12345",
-      userName: "Sarah Johnson",
-      createdAt: "2025-04-08T10:15:32Z",
-      totalAmount: 75.50,
-      status: "shipped",
-      items: 2,
-      shippingAddress: "456 Oak Ave, Someville, NY"
-    },
-    {
-      _id: "6580df21c23456",
-      orderId: "ORD-568925",
-      userId: "USR-45678",
-      userName: "Mike Wilson",
-      createdAt: "2025-04-07T18:22:43Z",
-      totalAmount: 210.75,
-      status: "processing",
-      items: 4,
-      shippingAddress: "789 Pine Rd, Elsewhere, TX"
-    },
-    {
-      _id: "6580df21d78901",
-      orderId: "ORD-568926",
-      userId: "USR-23456",
-      userName: "Lisa Brown",
-      createdAt: "2025-04-07T09:45:12Z",
-      totalAmount: 49.99,
-      status: "pending",
-      items: 1,
-      shippingAddress: "101 Elm St, Nowhere, FL"
-    },
-    {
-      _id: "6580df21e34567",
-      orderId: "ORD-568927",
-      userId: "USR-56789",
-      userName: "David Garcia",
-      createdAt: "2025-04-06T16:30:22Z",
-      totalAmount: 299.95,
-      status: "cancelled",
-      items: 5,
-      shippingAddress: "202 Maple Dr, Somewhere, WA"
-    },
-    {
-      _id: "6580df21f90123",
-      orderId: "ORD-568928",
-      userId: "USR-67890",
-      userName: "Emily Chen",
-      createdAt: "2025-04-06T11:18:09Z",
-      totalAmount: 89.50,
-      status: "delivered",
-      items: 2,
-      shippingAddress: "303 Cedar Ln, Anyplace, IL"
-    },
-    {
-      _id: "6580df22a45678",
-      orderId: "ORD-568929",
-      userId: "USR-78901",
-      userName: "Robert Taylor",
-      createdAt: "2025-04-05T20:12:36Z",
-      totalAmount: 154.25,
-      status: "shipped",
-      items: 3,
-      shippingAddress: "404 Birch Rd, Someplace, OR"
-    }
-  ];
-
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("all");
   const [sortConfig, setSortConfig] = useState({
@@ -115,11 +36,13 @@ export default function AdminOrders() {
   // Handle search input
   const handleSearch = (e) => {
     setSearchTerm(e.target.value);
+    // You may want to implement debouncing here for better performance
   };
 
   // Handle status filter selection
   const handleStatusSelect = (statusId) => {
     setSelectedStatus(statusId);
+    // TODO: Implement API call to filter by status if needed
   };
 
   // Handle sorting
@@ -129,63 +52,75 @@ export default function AdminOrders() {
       direction = "descending";
     }
     setSortConfig({ key, direction });
+    // TODO: Implement sorting API call if needed
   };
 
   // Handle status update
-  const handleStatusChange = (orderId, newStatus) => {
-    // Update the order status in the UI only for now
-    setOrders(orders.map(order => 
-      order._id === orderId ? { ...order, status: newStatus } : order
-    ));
-    
-    // Show confirmation message
-    alert(`Order ${orderId} status updated to ${newStatus}`);
+  const handleStatusChange = async (orderId, newStatus) => {
+    try {
+      setLoading(true);
+      // TODO: Implement your API call to update order status
+      // Example:
+      // await updateOrderStatus(orderId, newStatus);
+
+      // Update the local state after successful API call
+      setOrders(
+        orders.map((order) =>
+          order._id === orderId ? { ...order, status: newStatus } : order
+        )
+      );
+
+      // Show success message
+      // Example:
+      // showSuccessMessage(`Order status updated to ${newStatus}`);
+    } catch (err) {
+      // Handle error
+      // Example:
+      // showErrorMessage(err.message);
+      console.error("Error updating order status:", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Load sample data with simulated loading delay
+  // Fetch orders
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setOrders(sampleOrders);
-      setLoading(false);
-    }, 1000); // Simulate 1 second loading time
-    
-    return () => clearTimeout(timer);
+    allOrders(setOrders, setLoading, setError);
   }, []);
 
-  // Filter orders based on search term and selected status
-  const filteredOrders = orders.filter(order => {
-    const matchesSearch = 
-      order.orderId.toLowerCase().includes(searchTerm.toLowerCase()) || 
-      order.userId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.userName.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    const matchesStatus = selectedStatus === "all" || order.status === selectedStatus;
-    
-    return matchesSearch && matchesStatus;
-  });
+  // You can implement additional useEffect hooks for search/filter/sort if needed
+  // Example:
+  // useEffect(() => {
+  //   // Call API with filters when searchTerm or selectedStatus changes
+  // }, [searchTerm, selectedStatus]);
 
-  // Sort orders based on sortConfig
-  const sortedOrders = [...filteredOrders].sort((a, b) => {
-    if (!sortConfig.key) return 0;
-    
-    const aValue = a[sortConfig.key];
-    const bValue = b[sortConfig.key];
-    
-    if (aValue < bValue) {
-      return sortConfig.direction === "ascending" ? -1 : 1;
-    }
-    if (aValue > bValue) {
-      return sortConfig.direction === "ascending" ? 1 : -1;
-    }
-    return 0;
-  });
-
-  if (loading) {
+  if (loading && orders.length === 0) {
     return (
       <div className="min-h-screen bg-gray-100 flex justify-center items-center">
         <div className="flex items-center gap-2">
           <Loader size={24} className="animate-spin text-[#395c87]" />
           <span className="text-lg font-medium">Loading orders...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (error && orders.length === 0) {
+    return (
+      <div className="min-h-screen bg-gray-100 flex justify-center items-center">
+        <div className="p-6 bg-white rounded-lg shadow max-w-md">
+          <h2 className="text-xl font-semibold text-red-600 mb-2">Error</h2>
+          <p className="text-gray-700">{error}</p>
+          <button
+            onClick={() => {
+              // TODO: Implement retry function
+              // Example:
+              // fetchOrders();
+            }}
+            className="mt-4 px-4 py-2 bg-[#395c87] text-white rounded-md hover:bg-[#09274d]"
+          >
+            Try Again
+          </button>
         </div>
       </div>
     );
@@ -233,10 +168,7 @@ export default function AdminOrders() {
           <div className="overflow-x-auto">
             <div className="mb-4 flex justify-between items-center">
               <p className="text-sm text-gray-500">
-                Showing {sortedOrders.length} orders
-              </p>
-              <p className="text-sm font-medium">
-                Total Orders: <span className="text-[#09274d] font-bold">{orders.length}</span>
+                Showing {orders.length} orders
               </p>
             </div>
 
@@ -301,34 +233,46 @@ export default function AdminOrders() {
                 </tr>
               </thead>
               <tbody>
-                {sortedOrders.length > 0 ? (
-                  sortedOrders.map((order) => (
+                {orders.length > 0 ? (
+                  orders.map((order) => (
                     <tr
                       key={order._id}
                       className="bg-white border-b hover:bg-gray-50"
                     >
                       <td className="px-6 py-4 font-medium text-gray-900">
-                        {order.orderId}
+                        {/* Display order ID from your API response */}
+                        {order.orderId || order._id}
                       </td>
                       <td className="px-6 py-4">
                         <div>
-                          <div className="font-medium">{order.userName}</div>
-                          <div className="text-xs text-gray-500">{order.userId}</div>
+                          {/* Display customer name */}
+                          <div className="font-medium">
+                            {order.userName || "N/A"}
+                          </div>
+                          {/* Display user ID */}
+                          <div className="text-xs text-gray-500">
+                            {order.userId || "N/A"}
+                          </div>
                         </div>
                       </td>
                       <td className="px-6 py-4">
+                        {/* Format date as needed */}
                         {new Date(order.createdAt).toLocaleDateString()}
                       </td>
                       <td className="px-6 py-4 text-center">
-                        {order.items}
+                        {/* Display number of items */}
+                        {order.items || order.products?.length || 0}
                       </td>
                       <td className="px-6 py-4 font-medium">
-                        ${order.totalAmount.toFixed(2)}
+                        {/* Format amount */}$
+                        {order.totalAmount?.toFixed(2) || "0.00"}
                       </td>
                       <td className="px-6 py-4">
                         <select
-                          value={order.status}
-                          onChange={(e) => handleStatusChange(order._id, e.target.value)}
+                          value={order.status || "pending"}
+                          onChange={(e) =>
+                            handleStatusChange(order._id, e.target.value)
+                          }
                           className={`px-3 py-1 rounded-full text-xs font-medium ${
                             order.status === "delivered"
                               ? "bg-green-100 text-green-800"
@@ -351,9 +295,7 @@ export default function AdminOrders() {
                       <td className="px-6 py-4">
                         <div className="flex space-x-2">
                           <NavLink to={`/admin/orders/${order._id}`}>
-                            <button
-                              className="px-3 py-1 bg-[#395c87] text-white rounded-md hover:bg-[#09274d] flex items-center"
-                            >
+                            <button className="px-3 py-1 bg-[#395c87] text-white rounded-md hover:bg-[#09274d] flex items-center">
                               <Eye size={14} className="mr-1" />
                               View Details
                             </button>
