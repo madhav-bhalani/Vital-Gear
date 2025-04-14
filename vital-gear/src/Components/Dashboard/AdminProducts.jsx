@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Search, Edit, Trash, Filter, ArrowUpDown } from "lucide-react";
+import { Search, Edit, Trash, Filter, ArrowUpDown, Loader } from "lucide-react";
 import allProducts from "../../../controllers/Admin/allProducts";
 import { NavLink } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+
 
 export default function ProductDashboard() {
   const navigate = useNavigate();
@@ -88,8 +89,37 @@ export default function ProductDashboard() {
     allProducts(setProducts, setLoading, setError);
   }, []);
 
-  if (loading) return <h1>Loading...</h1>;
-  if (error) return <h1>{error}</h1>;
+  if (loading && products.length === 0) {
+    return (
+      <div className="min-h-screen bg-gray-100 flex justify-center items-center">
+        <div className="flex items-center gap-2">
+          <Loader size={24} className="animate-spin text-[#395c87]" />
+          <span className="text-lg font-medium">Loading orders...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (error && products.length === 0) {
+    return (
+      <div className="min-h-screen bg-gray-100 flex justify-center items-center">
+        <div className="p-6 bg-white rounded-lg shadow max-w-md">
+          <h2 className="text-xl font-semibold text-red-600 mb-2">Error</h2>
+          <p className="text-gray-700">{error}</p>
+          <button
+            onClick={() => {
+              // TODO: Implement retry function
+              // Example:
+              // fetchOrders();
+            }}
+            className="mt-4 px-4 py-2 bg-[#395c87] text-white rounded-md hover:bg-[#09274d]"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-100">

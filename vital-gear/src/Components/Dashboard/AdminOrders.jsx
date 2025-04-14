@@ -22,6 +22,9 @@ export default function AdminOrders() {
     { id: "shipped", name: "Shipped" },
     { id: "delivered", name: "Delivered" },
     { id: "cancelled", name: "Cancelled" },
+    { value: "in-transit", label: "In Transit"},
+    { value: "out for delivery", label: "Out for Delivery"},
+    { value: "placed", label: "Placed"}
   ];
 
   // Status options for dropdown
@@ -31,6 +34,9 @@ export default function AdminOrders() {
     { value: "shipped", label: "Shipped" },
     { value: "delivered", label: "Delivered" },
     { value: "cancelled", label: "Cancelled" },
+    { value: "in-transit", label: "In Transit"},
+    { value: "out for delivery", label: "Out for Delivery"},
+    { value: "placed", label: "Placed"}
   ];
 
   // Handle search input
@@ -86,6 +92,7 @@ export default function AdminOrders() {
   // Fetch orders
   useEffect(() => {
     allOrders(setOrders, setLoading, setError);
+    console.log("HG orders: ", orders);
   }, []);
 
   // You can implement additional useEffect hooks for search/filter/sort if needed
@@ -241,18 +248,18 @@ export default function AdminOrders() {
                     >
                       <td className="px-6 py-4 font-medium text-gray-900">
                         {/* Display order ID from your API response */}
-                        {order.orderId || order._id}
+                        {`${order._id.substring(0,7)}...`}
                       </td>
                       <td className="px-6 py-4">
                         <div>
                           {/* Display customer name */}
                           <div className="font-medium">
-                            {order.userName || "N/A"}
+                            {`${order.user?.firstName} ${order.user?.lastName}`}
                           </div>
                           {/* Display user ID */}
-                          <div className="text-xs text-gray-500">
-                            {order.userId || "N/A"}
-                          </div>
+                          {/* <div className="text-xs text-gray-500">
+                            {order.user?._id}
+                          </div> */}
                         </div>
                       </td>
                       <td className="px-6 py-4">
@@ -261,15 +268,15 @@ export default function AdminOrders() {
                       </td>
                       <td className="px-6 py-4 text-center">
                         {/* Display number of items */}
-                        {order.items || order.products?.length || 0}
+                        { order.orderItems?.length || 0}
                       </td>
                       <td className="px-6 py-4 font-medium">
-                        {/* Format amount */}$
-                        {order.totalAmount?.toFixed(2) || "0.00"}
+                        {/* Format amount */}₹
+                        {order.orderAmount?.toFixed(2) || "0.00"}
                       </td>
                       <td className="px-6 py-4">
                         <select
-                          value={order.status || "pending"}
+                          value={order.orderStatus || "pending"}
                           onChange={(e) =>
                             handleStatusChange(order._id, e.target.value)
                           }
