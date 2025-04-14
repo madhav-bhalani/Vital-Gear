@@ -25,6 +25,7 @@ import ProductDashboard from "./Components/Dashboard/AdminProducts";
 import EditProduct from "./Components/Dashboard/EditProduct";
 import UserProfile from "./Components/User Dashboard/UserProfile";
 import AdminOrders from "./Components/Dashboard/AdminOrders";
+import AdminOrderDetails from "./Components/Dashboard/AdminOrderDetails";
 
 const router = createBrowserRouter([
   {
@@ -33,6 +34,7 @@ const router = createBrowserRouter([
     children: [
       { index: true, element: <Dashboard /> },
       { path: "orders", element: <AdminOrders/>},
+      { path: "orders/details", element: <AdminOrderDetails/>},
       { path: "products", element: <ProductDashboard /> },
       { path: "products/add", element: <AddProduct /> },
       { path: "products/edit/:id", element: <EditProduct /> },
