@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Loader } from "lucide-react";
 import axios from "axios";
 import Header from "../Header";
 import Basics from "../Basics";
 import { useModal } from "../../ModalContext";
 import fetchUser from "../../../controllers/User/fetchUser";
+import allOrders from "../../../controllers/Admin/allOrders";
 
 export default function UserProfile() {
   const [activeTab, setActiveTab] = useState("profile");
@@ -885,73 +887,15 @@ function AddressModal({ address, onClose, onSave }) {
 
 // Order History Component
 function OrderHistory() {
-  const [orders, setOrders] = useState([
-    {
-      id: "ORD12345",
-      date: "2025-03-28",
-      status: "Delivered",
-      total: 3200,
-      items: [
-        {
-          name: "Gold Standard Whey Protein",
-          quantity: 1,
-          price: 2700,
-        },
-        {
-          name: "Shaker Bottle",
-          quantity: 1,
-          price: 500,
-        },
-      ],
-    },
-    {
-      id: "ORD12346",
-      date: "2025-04-01",
-      status: "Processing",
-      total: 4500,
-      items: [
-        {
-          name: "Mass Gainer",
-          quantity: 1,
-          price: 3500,
-        },
-        {
-          name: "Training Gloves",
-          quantity: 1,
-          price: 1000,
-        },
-      ],
-    },
-    {
-      id: "ORD12347",
-      date: "2025-04-03",
-      status: "Shipped",
-      total: 2800,
-      items: [
-        {
-          name: "Pre-Workout Energy Drink",
-          quantity: 2,
-          price: 1400,
-        },
-      ],
-    },
-  ]);
+  const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const [expandedOrder, setExpandedOrder] = useState(null);
 
   useEffect(() => {
     // Fetch user orders
-    const fetchOrders = async () => {
-      try {
-        // const response = await axios.get("http://localhost:3000/user/orders");
-        // setOrders(response.data);
-        // Using sample data for now
-      } catch (err) {
-        console.error("Error fetching orders:", err);
-      }
-    };
-
-    fetchOrders();
+    allOrders(setOrders, setLoading, setError);
   }, []);
 
   const toggleOrderDetails = (orderId) => {
@@ -964,18 +908,51 @@ function OrderHistory() {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case "Delivered":
+      case "delivered":
         return "bg-green-100 text-green-800";
-      case "Shipped":
+      case "shipped":
         return "bg-blue-100 text-blue-800";
-      case "Processing":
+      case "processing":
         return "bg-yellow-100 text-yellow-800";
-      case "Cancelled":
+      case "cancelled":
         return "bg-red-100 text-red-800";
       default:
         return "bg-gray-100 text-gray-800";
     }
   };
+
+  if (loading && orders.length === 0) {
+    return (
+      <div className="min-h-screen bg-gray-100 flex justify-center items-center">
+        <div className="flex items-center gap-2">
+          <Loader size={24} className="animate-spin text-[#395c87]" />
+          <span className="text-lg font-medium">Loading orders...</span>
+        </div>
+      </div>
+    );
+  }
+
+
+  if (error === 500  && orders.length === 0) {
+    return (
+      <div className="min-h-screen bg-gray-100 flex justify-center items-center">
+        <div className="p-6 bg-white rounded-lg shadow max-w-md">
+          <h2 className="text-xl font-semibold text-red-600 mb-2">Error</h2>
+          <p className="text-gray-700">{error}</p>
+          <button
+            onClick={() => {
+              // TODO: Implement retry function
+              // Example:
+              // fetchOrders();
+            }}
+            className="mt-4 px-4 py-2 bg-[#395c87] text-white rounded-md hover:bg-[#09274d]"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -991,34 +968,34 @@ function OrderHistory() {
         <div className="space-y-4">
           {orders.map((order) => (
             <div
-              key={order.id}
+              key={order._id}
               className="border bg-white rounded-lg overflow-hidden"
             >
               <div
                 className="flex justify-between items-center p-4 cursor-pointer hover:bg-gray-50"
-                onClick={() => toggleOrderDetails(order.id)}
+                onClick={() => toggleOrderDetails(order._id)}
               >
                 <div>
-                  <p className="font-medium">{order.id}</p>
+                  <p className="font-medium">{order._id}</p>
                   <p className="text-sm text-gray-500">
-                    {new Date(order.date).toLocaleDateString()}
+                    {new Date(order.createdAt).toLocaleDateString()}
                   </p>
                 </div>
 
                 <div className="flex items-center">
                   <span
                     className={`px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                      order.status
+                      order.orderStatus
                     )}`}
                   >
-                    {order.status}
+                    {order.orderStatus}
                   </span>
                   <span className="ml-4 text-[#09274d] font-medium">
-                    ₹{order.total.toLocaleString()}
+                    ₹{order.orderAmount.toLocaleString()}
                   </span>
                   <svg
                     className={`w-5 h-5 ml-2 transform transition-transform ${
-                      expandedOrder === order.id ? "rotate-180" : ""
+                      expandedOrder === order._id ? "rotate-180" : ""
                     }`}
                     fill="none"
                     stroke="currentColor"
@@ -1035,21 +1012,21 @@ function OrderHistory() {
                 </div>
               </div>
 
-              {expandedOrder === order.id && (
+              {expandedOrder === order._id && (
                 <div className="p-4 border-t border-gray-200 bg-gray-50">
                   <h4 className="font-medium mb-2">Order Items</h4>
 
                   <div className="space-y-2">
-                    {order.items.map((item, index) => (
+                    {order.orderItems.map((item, index) => (
                       <div key={index} className="flex justify-between">
                         <div>
-                          <p className="text-sm">{item.name}</p>
+                          <p className="text-sm">{`${item.productId?.brandName} ${item.productId?.productName}`}</p>
                           <p className="text-xs text-gray-500">
-                            Qty: {item.quantity}
+                            Qty: {item.itemQuantity}
                           </p>
                         </div>
                         <p className="text-sm">
-                          ₹{item.price.toLocaleString()}
+                          ₹{item.productId?.price.productPrice.toLocaleString()}
                         </p>
                       </div>
                     ))}
@@ -1058,7 +1035,7 @@ function OrderHistory() {
                   <div className="mt-4 pt-3 border-t border-gray-200 flex justify-between">
                     <p className="font-medium">Total</p>
                     <p className="font-medium">
-                      ₹{order.total.toLocaleString()}
+                      ₹{order.orderAmount.toLocaleString()}
                     </p>
                   </div>
                 </div>
