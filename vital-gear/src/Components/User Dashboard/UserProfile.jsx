@@ -6,6 +6,7 @@ import Header from "../Header";
 import Basics from "../Basics";
 import { useModal } from "../../ModalContext";
 import fetchUser from "../../../controllers/User/fetchUser";
+import fetchAddresses from "../../../controllers/User/fetchAddress"
 import allOrders from "../../../controllers/Admin/allOrders";
 
 export default function UserProfile() {
@@ -314,45 +315,14 @@ function ProfileInfo() {
 
 // Address Management Component
 function AddressManagement() {
-  const [addresses, setAddresses] = useState([
-    {
-      id: 1,
-      name: "Home",
-      addressLine1: "123 Main Street",
-      addressLine2: "Apt 4B",
-      city: "Mumbai",
-      state: "Maharashtra",
-      zipcode: "400001",
-      isDefault: true,
-    },
-    {
-      id: 2,
-      name: "Office",
-      addressLine1: "456 Business Park",
-      addressLine2: "Building C, Floor 3",
-      city: "Mumbai",
-      state: "Maharashtra",
-      zipcode: "400051",
-      isDefault: false,
-    },
-  ]);
-
+  const [addresses, setAddresses] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [currentAddress, setCurrentAddress] = useState(null);
 
   useEffect(() => {
-    // Fetch user addresses
-    const fetchAddresses = async () => {
-      try {
-        // const response = await axios.get("http://localhost:3000/user/addresses");
-        // setAddresses(response.data);
-        // Using sample data for now
-      } catch (err) {
-        console.error("Error fetching addresses:", err);
-      }
-    };
-
-    fetchAddresses();
+    fetchAddresses(setAddresses, setLoading, setError);
   }, []);
 
   const handleAddAddress = () => {
@@ -440,10 +410,10 @@ function AddressManagement() {
               </div>
 
               <div className="text-gray-700 text-sm mb-4">
-                <p>{address.addressLine1}</p>
-                {address.addressLine2 && <p>{address.addressLine2}</p>}
+                <p>{address.house}, {address.apartment}</p>
+               <p>{address.area},  {address.city}</p>
                 <p>
-                  {address.city}, {address.state} {address.zipcode}
+                 {address.state} {address.zipcode}
                 </p>
               </div>
 
