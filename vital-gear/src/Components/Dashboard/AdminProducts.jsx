@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Search, Edit, Trash, Filter, ArrowUpDown, Loader } from "lucide-react";
 import allProducts from "../../../controllers/Admin/allProducts";
+import fetchProducts from "../../../controllers/fetchProduct";
 import { NavLink } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -17,7 +18,7 @@ export default function ProductDashboard() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  // const [filtered, setFiltered] = useState([]);
   // Basic categories
   const categories = [
     { id: "all", name: "All Products" },
@@ -77,6 +78,7 @@ export default function ProductDashboard() {
     }
   };
 
+
   // This is just for demo - you'll get these values from your API
   // const totalRevenue = 32460;
   // const categoryRevenues = {
@@ -86,8 +88,12 @@ export default function ProductDashboard() {
   // };
 
   useEffect(() => {
-    allProducts(setProducts, setLoading, setError);
-  }, []);
+    if (selectedCategory === 'all') {
+      allProducts(setProducts, setLoading, setError);
+    } else {
+      fetchProducts(selectedCategory, setProducts, setLoading, setError);
+    }
+  }, [selectedCategory]);
 
   if (loading && products.length === 0) {
     return (
