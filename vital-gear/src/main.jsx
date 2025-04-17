@@ -26,6 +26,7 @@ import EditProduct from "./Components/Dashboard/EditProduct";
 import UserProfile from "./Components/User Dashboard/UserProfile";
 import AdminOrders from "./Components/Dashboard/AdminOrders";
 import AdminOrderDetails from "./Components/Dashboard/AdminOrderDetails";
+import Checkout from "./Components/Checkout";
 
 const router = createBrowserRouter([
   {
@@ -57,6 +58,10 @@ const router = createBrowserRouter([
   {
     path: "/PreWorkouts",
     element: <PreWorkouts />,
+  },
+  {
+    path: "/checkout",
+    element: <Checkout/>
   },
   {
     path: "/PostWorkouts",
