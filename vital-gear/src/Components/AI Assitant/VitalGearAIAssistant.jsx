@@ -7,6 +7,7 @@ import {
   MessageSquare,
   User,
 } from "lucide-react";
+import allProductsController from "../../../controllers/Admin/allProducts"; // Import the controller function
 
 export default function VitalGearAIAssistant() {
   const [isOpen, setIsOpen] = useState(false);
@@ -21,10 +22,23 @@ export default function VitalGearAIAssistant() {
   ]);
   const [input, setInput] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [allAvailableProducts, setAllAvailableProducts] = useState([]); // State for all products
   const messagesEndRef = useRef(null);
 
   // API URL for your FastAPI backend
   const API_URL = "http://localhost:8000";
+  // Remove PRODUCTS_API_URL as it's handled by the controller
+  // const PRODUCTS_API_URL = "http://localhost:3000"; // Adjust if different
+
+  // Fetch all products when component mounts using the controller
+  useEffect(() => {
+    // Define dummy functions for setLoading and setError if not needed here
+    const dummySetLoading = () => {};
+    const dummySetError = (err) => { console.error("Error fetching products via controller:", err); }; // Keep logging errors
+
+    // Call the imported controller function
+    allProductsController(setAllAvailableProducts, dummySetLoading, dummySetError);
+  }, []); // Empty dependency array ensures this runs only once on mount
 
   // Auto-scroll to bottom of messages
   useEffect(() => {
@@ -43,65 +57,39 @@ export default function VitalGearAIAssistant() {
     setInput(e.target.value);
   };
 
-  // Extract product information from text
-  const extractProductInfo = (text) => {
-    // Look for product mentions in the response
+  // Extract product information from text using available products
+  const extractProductInfo = (text, availableProducts) => {
     const products = [];
-    
-    // Try to parse product information based on patterns in the text
-    // This is a simple implementation and can be enhanced
-    const productRegex = /product:(.*?)(?=product:|$)/gs;
-    const matches = text.matchAll(productRegex);
-    
-    for (const match of matches) {
-      try {
-        const productText = match[1].trim();
-        const nameMatch = productText.match(/name:(.*?)(?=,|$)/);
-        const descMatch = productText.match(/description:(.*?)(?=,|$)/);
-        const priceMatch = productText.match(/price:(\d+\.?\d*)/);
-        const ratingMatch = productText.match(/rating:(\d+\.?\d*)/);
-        
-        if (nameMatch) {
-          products.push({
-            id: products.length + 1,
-            name: nameMatch[1].trim(),
-            description: descMatch ? descMatch[1].trim() : "Premium fitness product",
-            price: priceMatch ? parseFloat(priceMatch[1]) : 49.99,
-            rating: ratingMatch ? parseFloat(ratingMatch[1]) : 4.7,
+    const lowerCaseText = text.toLowerCase();
+
+    if (!availableProducts || availableProducts.length === 0) {
+      console.log("No available products to check against.");
+      return products; // Return empty if no products fetched yet
+    }
+
+    // Check each available product against the bot response text
+    availableProducts.forEach((product, index) => { // Add index for fallback key
+      // Check if product name (or other relevant fields) is mentioned
+      // Using includes for simple matching, could be enhanced with more robust NLP
+      if (product.productName && lowerCaseText.includes(product.productName.toLowerCase())) {
+        // Check if product already added to avoid duplicates (using productName as primary check)
+        if (!products.some(p => p.name === product.productName)) { // Check against name property of the object we are pushing
+           products.push({
+            // Assuming your product object has these fields, adjust as necessary
+            id: product._id || product.id || `${product.productName}-${index}`, // Use backend ID or fallback to name+index
+            name: product.productName, // Use productName
+            description: product.productDetails?.description || "Premium fitness product", // Use nested description
+            price: product.price?.productPrice || 49.99, // Use nested price
+            rating: product.rating || 4.7, // Use top-level rating
+            image: product.images?.[0]?.url || '', // Add first image URL
           });
         }
-      } catch (error) {
-        console.error("Error parsing product info:", error);
       }
-    }
-    
-    // Fallback: If no specific product format was found but product names are mentioned
-    if (products.length === 0) {
-      // Check for known product keywords
-      const keywords = [
-        { keyword: "protein", name: "VitalPro Plant Protein", price: 49.99 },
-        { keyword: "mat", name: "EcoFit Exercise Mat", price: 35.99 },
-        { keyword: "vitamin", name: "VitalBoost Multivitamin", price: 29.99 },
-        { keyword: "dumbbells", name: "FlexGrip Dumbbells", price: 79.99 },
-      ];
-      
-      for (const item of keywords) {
-        if (text.toLowerCase().includes(item.keyword.toLowerCase())) {
-          products.push({
-            id: products.length + 1,
-            name: item.name,
-            description: `Premium ${item.keyword} for your fitness needs`,
-            price: item.price,
-            rating: 4.7 + (Math.random() * 0.2).toFixed(1),
-          });
-          
-          // Limit to 2 products for now
-          if (products.length >= 2) break;
-        }
-      }
-    }
-    
-    return products;
+      // Add more checks here if needed (e.g., check product.category, product.keywords)
+    });
+
+    // Limit the number of suggested products if needed
+    return products.slice(0, 2); // Example: Limit to 2 suggestions
   };
 
   const handleSubmit = async (e) => {
@@ -140,8 +128,10 @@ export default function VitalGearAIAssistant() {
       const data = await response.json();
       const botResponseText = data.response;
       
-      // Extract product recommendations from the response
-      const products = extractProductInfo(botResponseText);
+      // Extract product recommendations from the response using fetched products
+      console.log("Available products before extraction:", allAvailableProducts); // Log available products
+      const products = extractProductInfo(botResponseText, allAvailableProducts);
+      console.log("Extracted products:", products); // Log extracted products
 
       // Create bot response
       const botResponse = {
@@ -260,9 +250,14 @@ export default function VitalGearAIAssistant() {
                             ${product.price}
                           </span>
                         </div>
-                        <p className="text-xs text-gray-600 mt-1">
-                          {product.description}
-                        </p>
+                        {/* Replace description with image */}
+                       
+                          <img 
+                            src={product.images[0].url}
+                            alt={product.productName}
+                            className="w-full h-24 object-cover mt-1 rounded"
+                          />
+                      
                         <div className="flex justify-between items-center mt-2">
                           <div className="flex items-center">
                             <span className="text-yellow-500">★</span>
