@@ -1,12 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import Header from "./Header";
+import Basics from "./Basics";
+import { useModal } from "../ModalContext";
+import fetchUser from "../../controllers/User/fetchUser";
+
 
 function Checkout() {
   // Mock data for testing
-  const mockUserInfo = {
-    fullName: "John Doe",
-    email: "john.doe@example.com",
-    mobile: "+91 9876543210"
-  };
 
   const mockAddresses = [
     { id: 1, name: "Home", fullAddress: "123 Main Street, Apartment 4B, Mumbai, Maharashtra - 400001" },
@@ -40,11 +40,9 @@ function Checkout() {
   // States
   const [selectedAddress, setSelectedAddress] = useState(mockAddresses[0].id);
   const [paymentMethod, setPaymentMethod] = useState("cod");
-  const [userInfo, setUserInfo] = useState(mockUserInfo);
-  const [editingInfo, setEditingInfo] = useState(false);
+
   const [isEditing, setIsEditing] = useState({
-    address: false,
-    userInfo: false
+    address: false
   });
 
   // Calculate totals
@@ -59,13 +57,6 @@ function Checkout() {
   };
 
   // Handle user info changes
-  const handleUserInfoChange = (e) => {
-    const { name, value } = e.target;
-    setUserInfo({
-      ...userInfo,
-      [name]: value
-    });
-  };
 
   // Format address for display
   const formatAddress = (address) => {
@@ -75,7 +66,24 @@ function Checkout() {
     return address.fullAddress;
   };
   
+  const {userId, setUserId} = useModal();
+  const [user, setUser] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (userId) {
+      fetchUser(userId, setLoading, setUser, setError);
+    }
+    console.log('HG userId', userId);
+  }, [userId]);
+
+  if (loading) return <h1>Loading...</h1>;
+  if (error) return <h1>{error}</h1>;
+
+
   return (
+    <><Header/>
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-6xl mx-auto px-4">
         <h1 className="text-3xl font-bold text-center mb-8 text-[#09274d]">Checkout</h1>
@@ -86,58 +94,35 @@ function Checkout() {
             <div className="bg-white rounded-lg shadow-md p-6 mb-6">
               <div className="flex justify-between items-center mb-4">
                 <h2 className="text-xl font-semibold text-[#09274d]">Personal Information</h2>
-                <button 
+                {/* <button 
                   onClick={() => setIsEditing({...isEditing, userInfo: !isEditing.userInfo})}
                   className="text-[#395c87] hover:text-[#09274d] font-medium"
                 >
                   {isEditing.userInfo ? "Save" : "Edit"}
-                </button>
+                </button> */}
               </div>
               
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                  {isEditing.userInfo ? (
-                    <input 
-                      type="text" 
-                      name="fullName" 
-                      value={userInfo.fullName} 
-                      onChange={handleUserInfoChange}
-                      className="w-full p-2 border border-gray-300 rounded-md"
-                    />
-                  ) : (
-                    <p className="text-gray-800">{userInfo.fullName}</p>
-                  )}
+
+                    <p className="text-gray-800">{user.firstName} {user.lastName}</p>
+
                 </div>
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                  {isEditing.userInfo ? (
-                    <input 
-                      type="email" 
-                      name="email" 
-                      value={userInfo.email} 
-                      onChange={handleUserInfoChange}
-                      className="w-full p-2 border border-gray-300 rounded-md"
-                    />
-                  ) : (
-                    <p className="text-gray-800">{userInfo.email}</p>
-                  )}
+   
+                    <p className="text-gray-800">{user.email}</p>
+
                 </div>
                 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">Mobile Number</label>
-                  {isEditing.userInfo ? (
-                    <input 
-                      type="tel" 
-                      name="mobile" 
-                      value={userInfo.mobile} 
-                      onChange={handleUserInfoChange}
-                      className="w-full p-2 border border-gray-300 rounded-md"
-                    />
-                  ) : (
-                    <p className="text-gray-800">{userInfo.mobile}</p>
-                  )}
+
+
+                    <p className="text-gray-800">{user.phone}</p>
+
                 </div>
               </div>
             </div>
@@ -299,6 +284,8 @@ function Checkout() {
         </div>
       </div>
     </div>
+    <Basics/>
+    </>
   );
 }
 
