@@ -16,28 +16,27 @@ function Checkout() {
   useEffect(() => {
     if (userId) {
       checkout(setUser, setCartItems, setLoading, setError);
-
     }
   }, [userId]);
 
-  console.log('HG user in client:', user);
+  console.log("HG user in client:", user);
 
-  // useEffect(() => {
-  //   if (
-  //     user.length > 0 &&
-  //     user[0] &&
-  //     Array.isArray(user[0].addresses) &&
-  //     user[0].addresses.length > 0
-  //   ) {
-  //     console.log("HG address: ", user[0].addresses);
-  //     const defaultAddress = user[0].addresses.find((addr) => addr.isDefault);
-  //     setSelectedAddress(
-  //       defaultAddress ? defaultAddress._id : user[0].addresses[0]._id
-  //     );
-  //   } else {
-  //     console.warn("Addresses are missing or undefined:", user[0]);
-  //   }
-  // }, [user]);
+  useEffect(() => {
+    if (
+      user.length > 0 &&
+      user[0] &&
+      Array.isArray(user[0]?.addresses) &&
+      user[0]?.addresses.length > 0
+    ) {
+      console.log("HG address: ", user[0]?.addresses);
+      const defaultAddress = user[0]?.addresses.find((addr) => addr.isDefault);
+      setSelectedAddress(
+        defaultAddress ? defaultAddress._id : user[0].addresses[0]._id
+      );
+    } else {
+      console.warn("Addresses are missing or undefined:", user[0]);
+    }
+  }, [user]);
 
   if (loading) return <h1>Loading...</h1>;
   if (error) return <h1>{error}</h1>;
@@ -73,7 +72,6 @@ function Checkout() {
                 <div className="bg-white rounded-lg shadow-md p-6 mb-6">
                   <h2 className="text-xl font-semibold text-[#09274d] mb-4">
                     Personal Information
-
                   </h2>
                   <div className="space-y-4">
                     <div>
@@ -101,7 +99,7 @@ function Checkout() {
               ))}
 
               {/* Delivery Address */}
-              {/* <div className="bg-white rounded-lg shadow-md p-6 mb-6">
+              <div className="bg-white rounded-lg shadow-md p-6 mb-6">
                 <div className="flex justify-between items-center mb-4">
                   <h2 className="text-xl font-semibold text-[#09274d]">
                     Delivery Address
@@ -126,7 +124,7 @@ function Checkout() {
                       onChange={(e) => setSelectedAddress(e.target.value)}
                       className="w-full p-2 border border-gray-300 rounded-md bg-white"
                     >
-                      {user[0].addresses.map((address) => (
+                      {user[0]?.addresses?.map((address) => (
                         <option key={address._id} value={address._id}>
                           {address.name}
                         </option>
@@ -135,7 +133,9 @@ function Checkout() {
 
                     <div className="p-3 bg-[#dae0ef] rounded-md">
                       {formatAddress(
-                        user[0].addresses.find((a) => a._id === selectedAddress)
+                        user[0]?.addresses?.find(
+                          (a) => a._id === selectedAddress
+                        )
                       )}
                     </div>
 
@@ -148,7 +148,7 @@ function Checkout() {
                     <div className="flex items-baseline mb-2">
                       <span className="font-medium text-[#09274d] mr-2">
                         {
-                          user[0].addresses.find(
+                          user[0]?.addresses?.find(
                             (a) => a._id === selectedAddress
                           )?.name
                         }
@@ -156,7 +156,7 @@ function Checkout() {
                       </span>
                       <span className="text-gray-700">
                         {formatAddress(
-                          user[0].addresses.find(
+                          user[0]?.addresses?.find(
                             (a) => a._id === selectedAddress
                           )
                         )}
@@ -164,7 +164,7 @@ function Checkout() {
                     </div>
                   </div>
                 )}
-              </div> */}
+              </div>
 
               {/* Payment Method */}
               <div className="bg-white rounded-lg shadow-md p-6">

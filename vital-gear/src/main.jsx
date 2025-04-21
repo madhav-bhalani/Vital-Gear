@@ -48,6 +48,10 @@ const router = createBrowserRouter([
     element: <Home />,
   },
   {
+    path: "/login",
+    element: <SignIn/>
+  },
+  {
     path: "/Proteins",
     element: <Protein />,
   },

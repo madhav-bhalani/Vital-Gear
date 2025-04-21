@@ -1,13 +1,15 @@
 import React from "react";
 import "./Cart.jsx";
-import { useState, useEffect } from "react";
+import { useState, useEffect, } from "react";
+import { useNavigate } from "react-router-dom";
 import { useModal } from "../ModalContext";
 import fetchCart from "../../controllers/fetchCart.js";
 import axios from "axios";
-import { Link, NavLink } from "react-router-dom";
+import Basics from "./Basics.jsx";
 
 export default function Cart() {
-  const { cartVisible, handleCart } = useModal();
+  const navigate = useNavigate();
+  const { cartVisible, handleCart, setIsSignInVisible } = useModal();
 
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -37,6 +39,32 @@ export default function Cart() {
       }
     }
   }
+
+  const handleCheckout = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/auth",
+        {},
+        {
+          withCredentials: true,
+        }
+      );
+      if (response.status === 200) {
+        // User is logged in, navigate to Checkout
+        navigate("/checkout");
+      }
+      else if (response.status === 204) {
+        navigate("/checkout");
+        // Handle this case if needed
+      }
+      else if(response.status === 401){
+        navigate("/login");
+      }
+    } catch (err) {
+        console.error("Error during checkout:", err);
+        setError("An error occurred. Please try again.");
+      }
+  };
 
   console.log("HG Cart inside Cart: ",cartVisible);
   useEffect(() => {
@@ -123,14 +151,13 @@ export default function Cart() {
             </div>
           </div>
           <div className="flex flex-row-reverse">
-            <NavLink to="/checkout">
-            <button className="transition-6000 bg-[#112D4E] w-[100%] rounded-md text-[#DBE2EF] p-3 font-semibold hover:bg-[#DBE2EF] hover:text-[#112D4E] hover:border hover:border-[#112D4E]">
+            <button onClick={handleCheckout} className="transition-6000 bg-[#112D4E] w-[100%] rounded-md text-[#DBE2EF] p-3 font-semibold hover:bg-[#DBE2EF] hover:text-[#112D4E] hover:border hover:border-[#112D4E]">
               Continue to checkout
             </button>
-            </NavLink>
           </div>
         </div>
       </div>
+      <Basics/>
     </>
   );
 }
