@@ -1,8 +1,9 @@
-import React from "react";
+import { React, useState } from "react";
 import { FaStar } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useModal } from "../ModalContext";
+import axios from "axios";
 
 export default function ShopItem({
   image,
@@ -15,6 +16,60 @@ export default function ShopItem({
   category,
 }) {
   const { toggleBread } = useModal();
+  const [quantity, setQuantity] = useState(1);
+  const [cartItems, setCartItems] = useState([]);
+  //CART for logged in users
+  const addToCart = async (id, quantity) => {
+    cartItems.push({ productId: id, itemQuantity: quantity });
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/shopping/cart",
+        { cartItems: JSON.stringify(cartItems) },
+        { withCredentials: true }
+      );
+      console.log("cart data: ", response.data);
+      alert(response.data.message);
+    } catch (err) {
+      alert(err.response.data.error);
+      console.log(err.response.data.error);
+    }
+  };
+
+  // CART for not logged in users
+  const tempCart = async (productId, quantity) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:3000/auth",
+        {},
+        { withCredentials: true }
+      );
+      if (response.status === 200) {
+        console.log("User is logged in, proceed with adding to cart");
+        addToCart(productId, quantity);
+      }
+    } catch (err) {
+      if (err.response && err.response.status === 401) {
+        let cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+        console.log("Current cart: ", cartItems);
+        const existingItemIndex = cartItems.findIndex(
+          (item) => item.productId === productId
+        );
+        if (existingItemIndex !== -1) {
+          cartItems[existingItemIndex].itemQuantity += quantity;
+          console.log("Updated cart (quantity increased): ", cartItems);
+        } else {
+          cartItems.push({ productId: productId, itemQuantity: quantity });
+          console.log("Updated cart (new item added): ", cartItems);
+        }
+        localStorage.setItem("cartItems", JSON.stringify(cartItems));
+        alert("Item updated in local storage cart");
+      } else {
+        console.log("ERROR IN ADDING TO CART", err);
+        alert("error while adding to local storage");
+      }
+    }
+  };
+
   return (
     <>
       <div className="flex flex-col gap-5 bg-[#dae0ef] max-w-lg p-5 rounded-md text-[#09274d]">
@@ -69,7 +124,10 @@ export default function ShopItem({
               <span className="absolute delay-300 top-0 left-0 w-full bg-[#09274d] duration-500 group-hover:translate-y-full h-full"></span>
             </button>
           </NavLink>
-          <button className="cursor-pointer relative group overflow-hidden border-2 px-8 py-2 border-[#09274d] rounded-full basis-[60%]">
+          <button
+            onClick={() => tempCart(id , quantity)}
+            className="cursor-pointer relative group overflow-hidden border-2 px-8 py-2 border-[#09274d] rounded-full basis-[60%]"
+          >
             <span className="font-bold text-[#dae0ef] text-xl relative z-10 group-hover:text-[#09274d] duration-500 uppercase">
               Add to cart
             </span>

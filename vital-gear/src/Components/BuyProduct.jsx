@@ -61,27 +61,6 @@ export default function BuyProduct() {
         addToCart(productId, quantity);
       }
     } catch (err) {
-      //old code
-      // if (err.response && err.response.status === 401) {
-      //   cart = JSON.parse(localStorage.getItem('cartItems')) || [];
-      //   console.log('Current cart: ', cart);
-
-      //   const existingItemIndex = cart.findIndex(item => item.id === productId);
-      //   if (existingItemIndex !== -1) {
-      //     cart[existingItemIndex].quantity += 1;
-      //     console.log('Updated cart (quantity increased): ', cart);
-      //   } else {
-      //     cart.push({ id: productId, quantity: 1 });
-      //     console.log('Updated cart (new item added): ', cart);
-      //   }
-
-      //   localStorage.setItem('cartItems', JSON.stringify(cart));
-      //   Cookies.set("cartItems", JSON.stringify(cart), {expires: 7, path: "/"});
-      //   alert('Item updated in local storage cart');
-      // } else {
-      //   console.log('ERROR IN ADDING TO CART', err);
-      //   alert('error while adding to local storage');
-      // }
       if (err.response && err.response.status === 401) {
         let cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
         console.log("Current cart: ", cartItems);
