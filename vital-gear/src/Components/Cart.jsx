@@ -124,8 +124,8 @@ export default function Cart() {
           </div>
           <div className="flex flex-row-reverse">
             <NavLink to="/checkout">
-            <button className="transition-500 bg-[#112D4E] w-full rounded-md text-[#DBE2EF] p-3 font-semibold hover:bg-[#DBE2EF] hover:text-[#112D4E] hover:border hover:border-[#112D4E]">
-              Continue to Payment
+            <button className="transition-6000 bg-[#112D4E] w-[100%] rounded-md text-[#DBE2EF] p-3 font-semibold hover:bg-[#DBE2EF] hover:text-[#112D4E] hover:border hover:border-[#112D4E]">
+              Continue to checkout
             </button>
             </NavLink>
           </div>
