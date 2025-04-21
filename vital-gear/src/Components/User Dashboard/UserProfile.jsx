@@ -340,9 +340,11 @@ function AddressManagement() {
   const handleDeleteAddress = async (addressId) => {
     if (window.confirm("Are you sure you want to delete this address?")) {
       try {
-        // await axios.delete(`http://localhost:3000/user/addresses/${addressId}`);
-        // Remove address from state
+        await axios.delete(`http://localhost:3000/address/${addressId}`, {
+          withCredentials: true,
+        });
         setAddresses(addresses.filter((addr) => addr.id !== addressId));
+        alert("Address deleted successfully.");
       } catch (err) {
         console.error("Error deleting address:", err);
         alert("Failed to delete address. Please try again.");
@@ -352,15 +354,17 @@ function AddressManagement() {
 
   const handleSetDefaultAddress = async (addressId) => {
     try {
-      // await axios.put(`http://localhost:3000/user/addresses/${addressId}/default`);
-
-      // Update local state
+      await axios.put(
+        `http://localhost:3000/address/${addressId}/default`,
+        {},
+        { withCredentials: true }
+      );
       const updatedAddresses = addresses.map((addr) => ({
         ...addr,
         isDefault: addr.id === addressId,
       }));
-
       setAddresses(updatedAddresses);
+      alert("Default address updated successfully.");
     } catch (err) {
       console.error("Error setting default address:", err);
       alert("Failed to set default address. Please try again.");
@@ -466,9 +470,17 @@ function AddressManagement() {
                 )
               );
             } else {
-              // Add new address with a generated ID
-              const newId = Math.max(...addresses.map((a) => a.id), 0) + 1;
-              setAddresses([...addresses, { ...newAddress, id: newId }]);
+              // Add new address
+              if (newAddress.isDefault) {
+                setAddresses(
+                  addresses.map((addr) => ({
+                    ...addr,
+                    isDefault: addr.id === newAddress.id,
+                  }))
+                );
+              } else {
+                setAddresses([...addresses, newAddress]);
+              }
             }
             setShowAddressModal(false);
           }}
@@ -507,19 +519,30 @@ function AddressModal({ address, onClose, onSave }) {
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        "http://localhost:3000/address", // Backend endpoint
-        formData,
-        { withCredentials: true } // Include credentials if required
-      );
+      const endpoint = address
+        ? `http://localhost:3000/address` // PUT request for editing
+        : `http://localhost:3000/address`; // POST request for adding
+
+      const method = address ? "put" : "post"; // Determine HTTP method
+      const payload = address
+        ? { ...formData, id: address?._id } // Include `id` for editing
+        : formData;
+
+      const response = await axios[method](endpoint, payload, {
+        withCredentials: true,
+      });
 
       if (response.status === 200) {
-        onSave(response.data.address); // Assuming the response contains the new address
+        onSave(response.data.updatedAddress || response.data.address);
       }
       alert(response.data.message);
     } catch (err) {
-      console.error("Error saving address:", err);
-      alert("Failed to save address. Please try again.");
+      if (err.response && err.response.data && err.response.data.message) {
+        alert(err.response.data.message);
+      } else {
+        alert("An unexpected error occurred. Please try again.");
+      }
+      console.error("Error:", err);
     } finally {
       setLoading(false);
     }
