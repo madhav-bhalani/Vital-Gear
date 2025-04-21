@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./SignIn.jsx";
 import { useModal } from "../ModalContext.jsx";
+import {flash} from "react-universal-flash";
 
 export default function SignIn() {
   const {
@@ -65,6 +66,7 @@ export default function SignIn() {
         alert(response.data.message);
         // Navigate to home page after login
         navigate("/");
+        // flash("logged in!!", 5000, "success")
       }
       // console.log("Login successful:", response.data.user);
     } catch (err) {

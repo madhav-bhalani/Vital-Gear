@@ -189,6 +189,8 @@ export default function SignUp() {
                 id="password"
                 name="password"
                 value={password}
+                  pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+                title="Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character."
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
                 placeholder="Create password"
@@ -232,6 +234,8 @@ export default function SignUp() {
                 type={!pass ? "password" : "text"}
                 id="confirmPassword"
                 name="confirmPassword"
+                  pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$"
+                title="Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character."
                 value={confirmPass}
                 onChange={(e) => setconfirmPass(e.target.value)}
                 className="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"

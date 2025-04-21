@@ -10,6 +10,8 @@ import Footer from "./Footer";
 import { Pricing } from "./Pricing";
 import Cart from "./Cart";
 import Basics from "./Basics";
+// import {Flasher} from "react-universal-flash";
+// import Message from "./Message";
 
 const App = () => {
   const images = ["/carousel/1.png", "/carousel/2.png", "/carousel/3.png"];
@@ -17,7 +19,9 @@ const App = () => {
   return (
     <div>
       <Header />
-
+      {/* <Flasher>
+        <Message />
+      </Flasher> */}
       <Carousel images={images} />
       <Features />
       <BestSelling />

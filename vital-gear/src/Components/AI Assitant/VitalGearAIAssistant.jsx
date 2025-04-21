@@ -7,6 +7,7 @@ import {
   MessageSquare,
   User,
 } from "lucide-react";
+import { NavLink } from "react-router-dom";
 import allProductsController from "../../../controllers/Admin/allProducts"; // Import the controller function
 
 export default function VitalGearAIAssistant() {
@@ -77,7 +78,8 @@ export default function VitalGearAIAssistant() {
            products.push({
             // Assuming your product object has these fields, adjust as necessary
             id: product._id || product.id || `${product.productName}-${index}`, // Use backend ID or fallback to name+index
-            name: product.productName, // Use productName
+            name: product.brandName + product.productName, // Use productName
+            category: product.category || "Fitness", // Use category
             description: product.productDetails?.description || "Premium fitness product", // Use nested description
             price: product.price?.productPrice || 49.99, // Use nested price
             rating: product.rating || 4.7, // Use top-level rating
@@ -247,16 +249,16 @@ export default function VitalGearAIAssistant() {
                             {product.name}
                           </span>
                           <span className="text-sm font-bold">
-                            ${product.price}
+                          ₹{product.price}
                           </span>
                         </div>
                         {/* Replace description with image */}
                        
-                          <img 
-                            src={product.images[0].url}
+                          {/* <img 
+                            src={product?.images[0]?.url}
                             alt={product.productName}
                             className="w-full h-24 object-cover mt-1 rounded"
-                          />
+                          /> */}
                       
                         <div className="flex justify-between items-center mt-2">
                           <div className="flex items-center">
@@ -265,10 +267,12 @@ export default function VitalGearAIAssistant() {
                               {product.rating}
                             </span>
                           </div>
+                          <NavLink to={`/Products/${product.id}`} state={product.category}>
                           <button className="text-xs bg-[#09274d] text-white py-1 px-2 rounded flex items-center">
                             View Product
                             <ChevronRight size={12} className="ml-1" />
                           </button>
+                          </NavLink>
                         </div>
                       </div>
                     ))}
