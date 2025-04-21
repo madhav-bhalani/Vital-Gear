@@ -78,7 +78,7 @@ export default function VitalGearAIAssistant() {
            products.push({
             // Assuming your product object has these fields, adjust as necessary
             id: product._id || product.id || `${product.productName}-${index}`, // Use backend ID or fallback to name+index
-            name: product.brandName + product.productName, // Use productName
+            name: product.brandName + " " + product.productName, // Use productName
             category: product.category || "Fitness", // Use category
             description: product.productDetails?.description || "Premium fitness product", // Use nested description
             price: product.price?.productPrice || 49.99, // Use nested price

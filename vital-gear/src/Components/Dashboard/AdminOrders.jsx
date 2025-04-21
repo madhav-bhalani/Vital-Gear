@@ -301,7 +301,7 @@ export default function AdminOrders() {
                       </td>
                       <td className="px-6 py-4">
                         <div className="flex space-x-2">
-                          <NavLink to={`/admin/orders/${order._id}`}>
+                          <NavLink to={`/admin/orders/details/${order._id}`}>
                             <button className="px-3 py-1 bg-[#395c87] text-white rounded-md hover:bg-[#09274d] flex items-center">
                               <Eye size={14} className="mr-1" />
                               View Details
