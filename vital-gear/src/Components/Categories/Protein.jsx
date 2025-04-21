@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import Header from "./Header";
-import Breadcrumb from "./Breadcrumb";
-import ShopItem from "./ShopItem";
-import Pagination from "./Pagination";
-import Cart from "./Cart";
-import Basics from "./Basics";
-import SearchFilter from "./SearchFilter";
-import fetchProducts from "../../controllers/fetchProduct";
+import Header from "../Header";
+import Breadcrumb from "../Breadcrumb";
+import ShopItem from "../ShopItem";
+import Pagination from "../Pagination";
+import Cart from "../Cart";
+import Basics from "../Basics";
+import SearchFilter from "../SearchFilter";
+import fetchProducts from "../../../controllers/fetchProduct";
 
 export default function Protein() {
   const [products, setProducts] = useState([]);
