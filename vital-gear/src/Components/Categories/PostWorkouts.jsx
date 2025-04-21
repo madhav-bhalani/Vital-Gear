@@ -46,13 +46,12 @@ export default function PostWorkouts() {
             products.map((product) => (
               <ShopItem
                 key={product._id}
-                image={product.images[0].url || " "}
+                image={product.images[0]?.url || " "}
                 title={`${product.brandName || " "} ${
                   product.productName || " "
                 }`}
-                size={`${product.sizes?.weight[1]}g` || ' '}
-                flavour={product.productDetails?.flavours?.[0] ||
-                  " "}
+                size={`${product.sizes?.weight[1]}g` || " "}
+                flavour={product.productDetails?.flavours?.[0] || " "}
                 price={product.price?.productPrice || 0}
                 onSale={product.price.onSale}
                 id={product._id}

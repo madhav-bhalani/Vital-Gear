@@ -6,7 +6,7 @@ import Header from "../Header";
 import Basics from "../Basics";
 import { useModal } from "../../ModalContext";
 import fetchUser from "../../../controllers/User/fetchUser";
-import fetchAddresses from "../../../controllers/User/fetchAddress"
+import fetchAddresses from "../../../controllers/User/fetchAddress";
 import allOrders from "../../../controllers/Admin/allOrders";
 
 export default function UserProfile() {
@@ -112,29 +112,31 @@ function ProfileInfo() {
 
     formData.set("firstName", firstName);
     formData.set("lastName", lastName);
-    formData.set("email",email);
+    formData.set("email", email);
     formData.set("phone", phone);
     formData.set("newPass", newPass);
     formData.set("password", password);
 
-
-    try{
+    try {
       console.log("HG Form: ", Array.from(formData.entries()));
-      const response = await axios.put(`http://localhost:3000/user/${userId}`, formData, {withCredentials: true})
+      const response = await axios.put(
+        `http://localhost:3000/user/${userId}`,
+        formData,
+        { withCredentials: true }
+      );
       alert(response.data.message);
-      navigate('/User');
-    } catch(err){
+      navigate("/User");
+    } catch (err) {
       alert(err.response.data.error);
       console.log(err.response.data.error);
     }
-
   };
 
   useEffect(() => {
     if (userId) {
       fetchUser(userId, setLoading, setUser, setError);
     }
-    console.log('HG userId', userId);
+    console.log("HG userId", userId);
   }, [userId]);
 
   useEffect(() => {
@@ -331,7 +333,7 @@ function AddressManagement() {
   };
 
   const handleEditAddress = (address) => {
-    setCurrentAddress(address);
+    setCurrentAddress(address); // Pass the selected address for editing
     setShowAddressModal(true);
   };
 
@@ -410,10 +412,14 @@ function AddressManagement() {
               </div>
 
               <div className="text-gray-700 text-sm mb-4">
-                <p>{address.house}, {address.apartment}</p>
-               <p>{address.area},  {address.city}</p>
                 <p>
-                 {address.state} {address.zipcode}
+                  {address.house}, {address.apartment}
+                </p>
+                <p>
+                  {address.area}, {address.city}
+                </p>
+                <p>
+                  {address.state} {address.zipcode}
                 </p>
               </div>
 
@@ -475,7 +481,6 @@ function AddressManagement() {
 // Address Modal Component
 function AddressModal({ address, onClose, onSave }) {
   const [formData, setFormData] = useState({
-    id: address?._id || null,
     name: address?.name || "",
     house: address?.house || "",
     apartment: address?.apartment || "",
@@ -502,21 +507,16 @@ function AddressModal({ address, onClose, onSave }) {
     setLoading(true);
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const response = await axios.post(
+        "http://localhost:3000/address", // Backend endpoint
+        formData,
+        { withCredentials: true } // Include credentials if required
+      );
 
-      // When editing an existing address:
-      if (address) {
-        // const response = await axios.put(`http://localhost:3000/user/addresses/${address.id}`, formData);
-        // onSave(response.data);
-        onSave(formData);
+      if (response.status === 200) {
+        onSave(response.data.address); // Assuming the response contains the new address
       }
-      // When adding a new address:
-      else {
-        // const response = await axios.post("http://localhost:3000/user/addresses", formData);
-        // onSave(response.data);
-        onSave(formData);
-      }
+      alert(response.data.message);
     } catch (err) {
       console.error("Error saving address:", err);
       alert("Failed to save address. Please try again.");
@@ -532,134 +532,6 @@ function AddressModal({ address, onClose, onSave }) {
           {address ? "Edit Address" : "Add New Address"}
         </h3>
 
-        {/* <form onSubmit={handleSubmit}>
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
-                Address Name
-              </label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                className="w-full rounded-lg border-gray-200 p-3 text-sm shadow-sm"
-                placeholder="Home, Office, etc."
-                required
-              />
-            </div>
-            
-            <div>
-              <label htmlFor="addressLine1" className="block text-sm font-medium text-gray-700 mb-1">
-                Address Line 1
-              </label>
-              <input
-                type="text"
-                id="addressLine1"
-                name="addressLine1"
-                value={formData.addressLine1}
-                onChange={handleChange}
-                className="w-full rounded-lg border-gray-200 p-3 text-sm shadow-sm"
-                placeholder="Street address, building name"
-                required
-              />
-            </div>
-            
-            <div>
-              <label htmlFor="addressLine2" className="block text-sm font-medium text-gray-700 mb-1">
-                Address Line 2 (Optional)
-              </label>
-              <input
-                type="text"
-                id="addressLine2"
-                name="addressLine2"
-                value={formData.addressLine2}
-                onChange={handleChange}
-                className="w-full rounded-lg border-gray-200 p-3 text-sm shadow-sm"
-                placeholder="Apartment, floor, etc."
-              />
-            </div>
-            
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1">
-                  City
-                </label>
-                <input
-                  type="text"
-                  id="city"
-                  name="city"
-                  value={formData.city}
-                  onChange={handleChange}
-                  className="w-full rounded-lg border-gray-200 p-3 text-sm shadow-sm"
-                  required
-                />
-              </div>
-              
-              <div>
-                <label htmlFor="state" className="block text-sm font-medium text-gray-700 mb-1">
-                  State
-                </label>
-                <input
-                  type="text"
-                  id="state"
-                  name="state"
-                  value={formData.state}
-                  onChange={handleChange}
-                  className="w-full rounded-lg border-gray-200 p-3 text-sm shadow-sm"
-                  required
-                />
-              </div>
-            </div>
-            
-            <div>
-              <label htmlFor="zipcode" className="block text-sm font-medium text-gray-700 mb-1">
-                PIN Code
-              </label>
-              <input
-                type="text"
-                id="zipcode"
-                name="zipcode"
-                value={formData.zipcode}
-                onChange={handleChange}
-                className="w-full rounded-lg border-gray-200 p-3 text-sm shadow-sm"
-                required
-              />
-            </div>
-            
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="isDefault"
-                name="isDefault"
-                checked={formData.isDefault}
-                onChange={handleChange}
-                className="rounded border-gray-300"
-              />
-              <label htmlFor="isDefault" className="ml-2 text-sm text-gray-700">
-                Set as default address
-              </label>
-            </div>
-          </div>
-          
-          <div className="flex justify-end mt-6 space-x-4">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg text-sm"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-2 bg-[#09274d] text-white rounded-lg text-sm flex items-center"
-              disabled={loading}
-            >
-              {loading ? "Saving..." : "Save Address"}
-            </button>
-          </div>
-        </form> */}
         <form onSubmit={handleSubmit}>
           <div className="space-y-4">
             <div>
@@ -680,83 +552,84 @@ function AddressModal({ address, onClose, onSave }) {
                 required
               />
             </div>
-            
+
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div>
-              <label
-                htmlFor="houseFlat"
-                className="block text-sm font-medium text-gray-700"
-              >
-                House/Flat Number
-              </label>
-              <input
-                type="text"
-                id="houseFlat"
-                name="houseFlat"
-                value={formData.houseFlat}
-                onChange={handleChange}
-                className="w-full rounded-lg border-gray-200 p-4 text-sm shadow-sm"
-                placeholder="House/Flat Number"
-                required
-              />
+              <div>
+                <label
+                  htmlFor="house"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  House/Flat Number
+                </label>
+                <input
+                  type="text"
+                  id="house"
+                  name="house"
+                  value={formData.house}
+                  onChange={handleChange}
+                  className="w-full rounded-lg border-gray-200 p-4 text-sm shadow-sm"
+                  placeholder="House/Flat Number"
+                  required
+                />
+              </div>
+
+              <div>
+                <label
+                  htmlFor="apartment"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Apartment/Road
+                </label>
+                <input
+                  type="text"
+                  id="apartment"
+                  name="apartment"
+                  value={formData.apartment}
+                  onChange={handleChange}
+                  className="w-full rounded-lg border-gray-200 p-4 text-sm shadow-sm"
+                  placeholder="Apartment name or Road"
+                  required
+                />
+              </div>
             </div>
 
-            <div>
-              <label
-                htmlFor="apartmentRoad"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Apartment/Road
-              </label>
-              <input
-                type="text"
-                id="apartmentRoad"
-                name="apartmentRoad"
-                value={formData.apartmentRoad}
-                onChange={handleChange}
-                className="w-full rounded-lg border-gray-200 p-4 text-sm shadow-sm"
-                placeholder="Apartment name or Road"
-                required
-              />
-            </div>
-            </div>
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <div>
-              <label
-                htmlFor="landmark"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Landmark (Optional)
-              </label>
-              <input
-                type="text"
-                id="landmark"
-                name="landmark"
-                value={formData.landmark}
-                onChange={handleChange}
-                className="w-full rounded-lg border-gray-200 p-4 text-sm shadow-sm"
-                placeholder="Nearby landmark"
-              />
-            </div>
+              <div>
+                <label
+                  htmlFor="landmark"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Landmark (Optional)
+                </label>
+                <input
+                  type="text"
+                  id="landmark"
+                  name="landmark"
+                  value={formData.landmark}
+                  onChange={handleChange}
+                  className="w-full rounded-lg border-gray-200 p-4 text-sm shadow-sm"
+                  placeholder="Nearby landmark"
+                />
+              </div>
 
-            <div>
-              <label
-                htmlFor="area"
-                className="block text-sm font-medium text-gray-700"
-              >
-                Area
-              </label>
-              <input
-                type="text"
-                id="area"
-                name="area"
-                value={formData.area}
-                onChange={handleChange}
-                className="w-full rounded-lg border-gray-200 p-4 text-sm shadow-sm"
-                placeholder="Area/Locality"
-                required
-              />
-            </div>
+              <div>
+                <label
+                  htmlFor="area"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Area
+                </label>
+                <input
+                  type="text"
+                  id="area"
+                  name="area"
+                  value={formData.area}
+                  onChange={handleChange}
+                  className="w-full rounded-lg border-gray-200 p-4 text-sm shadow-sm"
+                  placeholder="Area/Locality"
+                  required
+                />
+              </div>
             </div>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -902,8 +775,7 @@ function OrderHistory() {
     );
   }
 
-
-  if (error === 500  && orders.length === 0) {
+  if (error === 500 && orders.length === 0) {
     return (
       <div className="min-h-screen bg-gray-100 flex justify-center items-center">
         <div className="p-6 bg-white rounded-lg shadow max-w-md">
