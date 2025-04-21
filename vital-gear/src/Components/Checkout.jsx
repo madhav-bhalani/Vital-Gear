@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import Header from "./Header";
 import Basics from "./Basics";
 import { useModal } from "../ModalContext";
 import checkout from "../../controllers/checkout";
 
 function Checkout() {
+  const navigate  = useNavigate();
   const { userId } = useModal(); // Get userId from context
   const [user, setUser] = useState([]);
   const [cartItems, setCartItems] = useState([]);
@@ -12,6 +15,19 @@ function Checkout() {
   const [error, setError] = useState("");
   const [isEditing, setIsEditing] = useState({ address: false });
   const [selectedAddress, setSelectedAddress] = useState(null);
+
+  const placeOrder = async () => {
+    try{
+      const response = await axios.post('http://localhost:3000/orders/place', {address: selectedAddress}, {withCredentials: true});
+      if (response.status === 201) {
+        alert(response.data.message);
+        navigate("/");
+      }
+    }catch(err){
+      setError(err.message || "Failed to place order");
+    }
+  }
+
 
   useEffect(() => {
     if (userId) {
@@ -243,7 +259,8 @@ function Checkout() {
                 </div>
 
                 <button
-                  onClick={() => alert("Order placed successfully!")}
+                  onClick={placeOrder}
+                  disabled={cartItems.length === 0}
                   className="w-full py-3 bg-[#09274d] text-white rounded-md font-medium hover:bg-[#395c87] transition duration-300"
                 >
                   Place Order
